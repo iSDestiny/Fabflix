@@ -1,36 +1,52 @@
 function handleMovieListResult(resultData) {
-
-    // Populate the star table
-    // Find the empty table body by id "star_table_body"
-    let moviesTableBodyElement = jQuery("#movies_table_body");
-
-    // Iterate through resultData, no more than 10 entries
-    for (let i = 0; i < Math.min(20, resultData.length); i++) {
-
-        // Concatenate the html tags with resultData jsonObject
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        rowHTML +=
-            "<td>" +
-            // Add a link to single-star.html with id passed with GET url parameter
-            '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">'
-            + resultData[i]["movie_title"] +     // display star_name for the link text
-            '</a>' +
-            "</td>";
-        rowHTML += "<td>" + resultData[i]["movie_year"] + "</td>";
-        rowHTML += "<td>" + resultData[i]["movie_director"] + "</td>";
-        rowHTML += "<td>" + resultData[i]["movie_rating"] + "</td>";
-        rowHTML += "</tr>";
-
-        // Append the row created to the table body, which will refresh the page
-        moviesTableBodyElement.append(rowHTML);
-    }
+	createMovieCard(resultData);
 }
 
-console.log("lmao");
+function createMovieCard(data) {
+	var movieCardCollection = jQuery("#movie_card_collection");
+	
+	for(var i = 0; i < Math.min(20, data.length); ++i)
+	{
+		var rowHTML =  '<div class="col-md-6 col-lg-4 mb-3">';
+		rowHTML += "<div class=\"card bg-light\">";
+		rowHTML += "<div class=\"card-body\">";
+		rowHTML += "<h5 class=\"card-title\">" + '<a href="single-movie.html?id=' + 
+			data[i]["movie_id"] + '">' + data[i]["movie_title"] + "</a>" +
+			" (" + data[i]["movie_year"] + ")" + "</h5>";
+		rowHTML += '<p class="card-text mb-1"><strong>Director</strong>: ' + 
+			data[i]["movie_director"] + "</p>";
+
+		rowHTML += '<p class="card-text mb-1"><strong>Rating</strong>: ' + 
+			'<i class="far fa-star"></i> ' + data[i]["movie_rating"] + "</p>";
+
+		rowHTML += '<p class="card-text mb-1"><strong>Genre(s)</strong>: '
+		data[i]["movie_genres"].forEach(function(genre){
+			rowHTML += genre + ', ';
+		});
+		rowHTML = rowHTML.slice(0, rowHTML.lastIndexOf(",")) + "</p>";
+		
+		rowHTML += '<p class="card-text mb-1"><strong>Stars</strong>: ';
+		data[i]["movie_stars"].forEach(function(star){
+			rowHTML += '<a href="single-star.html?id=' + star["star_id"] + '">' + star["star_name"] + "</a>";
+			rowHTML += ', ';
+		});
+		rowHTML = rowHTML.slice(0, rowHTML.lastIndexOf(",")) + "</p>";
+		
+		rowHTML += '<button type="button" class="btn btn-success mt-2">Add to cart</button>'
+		
+		rowHTML += "</div></div></div>";
+		movieCardCollection.append(rowHTML);
+	}
+	
+}
+
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
     url: "api/movies", // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleMovieListResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
+
+
+
+
