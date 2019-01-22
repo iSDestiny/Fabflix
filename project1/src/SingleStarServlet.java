@@ -16,15 +16,12 @@ import java.sql.ResultSet;
 
 @WebServlet(name = "SingleStarServlet", urlPatterns = "/api/single-star")
 public class SingleStarServlet extends HttpServlet {
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 1L;
 
 	@Resource(name = "jdbc/moviedb")
 	private DataSource dataSource;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -57,7 +54,7 @@ public class SingleStarServlet extends HttpServlet {
 				jsonObject.addProperty("star_name", starName);
 				jsonObject.addProperty("star_dob", starDob);
 				
-				String moviesQuery = "SELECT m.title\r\n" +
+				String moviesQuery = "SELECT m.id, m.title\r\n" +
 									 "FROM movies m, stars s, stars_in_movies sm\r\n" +
 									 "WHERE s.id = sm.starId and sm.movieId = m.id and s.id = ?";
 				
@@ -69,7 +66,10 @@ public class SingleStarServlet extends HttpServlet {
 				
 				while (moviesrs.next())
 				{
-					moviesArray.add(moviesrs.getString("title"));
+					JsonObject movieJsonObject = new JsonObject();
+					movieJsonObject.addProperty("movie_id", moviesrs.getString("id"));
+					movieJsonObject.addProperty("movie_title", moviesrs.getString("title"));
+					moviesArray.add(movieJsonObject);
 				}
 				
 				jsonObject.add("stars_in", moviesArray);
