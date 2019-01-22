@@ -15,9 +15,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 /**
  * Servlet implementation class MovieListServlet
@@ -30,14 +28,6 @@ public class MovieListServlet extends HttpServlet {
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
 	
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-//    public MovieListServlet() {
-//        super();
-//        // TODO Auto-generated constructor stub
-//    }
-
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -59,24 +49,6 @@ public class MovieListServlet extends HttpServlet {
 					"LIMIT 20";
 			
 			ResultSet rs = statement.executeQuery(query);
-			
-//			System.out.println("The results of the query");
-//			ResultSetMetaData metadata = rs.getMetaData();
-//			System.out.println("There are " + metadata.getColumnCount() + " columns");
-//			
-//			int movieNum = 1;
-//			while(rs.next())
-//			{
-//				String movie_id = rs.getString("id");
-//				String movie_title = rs.getString("title");
-//				String movie_year = rs.getString("year");
-//				String movie_director = rs.getString("director");
-//				String movie_rating = rs.getString("rating");
-//				
-//				System.out.println(movieNum + " " + movie_id + " " + movie_title + " " + movie_year + " " +
-//						movie_director + " " + movie_rating);
-//				++movieNum;
-//			}
 			
 			JsonArray jsonArray = new JsonArray();
 			

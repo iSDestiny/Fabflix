@@ -16,22 +16,17 @@ import java.sql.ResultSet;
 
 @WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/single-movie")
 public class SingleMovieServlet extends HttpServlet {
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 1L;
 
 	@Resource(name = "jdbc/moviedb")
 	private DataSource dataSource;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		response.setContentType("application/json");
 
 		String id = request.getParameter("id");
-
 		PrintWriter out = response.getWriter();
 
 		try 
@@ -78,7 +73,6 @@ public class SingleMovieServlet extends HttpServlet {
 				
 				while(genresResult.next())
 				{
-					//genres.add(genresResult.getString("name"));
 					genresJsonArr.add(genresResult.getString("name"));
 				}
 				
