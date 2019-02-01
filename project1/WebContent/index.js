@@ -7,8 +7,8 @@ function createMovieCard(data) {
 	
 	for(var i = 0; i < Math.min(20, data.length); ++i)
 	{
-		var rowHTML =  '<div class="col-md-6 col-lg-4 mb-3">';
-		rowHTML += "<div class=\"card bg-light\">";
+		var rowHTML =  '<div class="col mb-3 d-flex align-items-stretch">';
+		rowHTML += "<div class=\"card h-100 bg-light\">";
 		rowHTML += "<div class=\"card-body\">";
 		rowHTML += "<h5 class=\"card-title\">" + '<a href="single-movie.html?id=' + 
 			data[i]["movie_id"] + '">' + data[i]["movie_title"] + "</a>" +
@@ -34,16 +34,37 @@ function createMovieCard(data) {
 		
 		rowHTML += '<button type="button" class="btn btn-success mt-2">Add to cart</button>'
 		
-		rowHTML += "</div></div></div>";
+		rowHTML += '</div></div></div><div class="w-100"></div>';
 		movieCardCollection.append(rowHTML);
 	}
 	
 }
 
+function getParameterByName(target) {
+    // Get request URL
+    let url = window.location.href;
+    // Encode target parameter name to url encoding
+    target = target.replace(/[\[\]]/g, "\\$&");
+
+    // Use regular expression to find matched parameter value
+    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+
+    // Return the decoded parameter value
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+// var limit = getParameterByName("limit");
+// var page = getParameterByName("page");
+// var sort = getParameterByName("sort");
+// var title = getParameterByName("title");
+
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "api/movies", // Setting request url, which is mapped by StarsServlet in Stars.java
+    url: "api/movies" + window.location.search, // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleMovieListResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
 

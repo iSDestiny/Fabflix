@@ -15,14 +15,17 @@
     	#heading{
     		background: url(images/space-background.jpg) center center / cover no-repeat;
     	}
+        .card{
+            width: 1000px;
+        }
     </style>
 </head>
 <body>
 
-<section id="heading" class="jumbotron text-center mb-0 rounded-0 text-light">
+<!-- <section id="heading" class="jumbotron text-center mb-0 rounded-0 text-light">
     <h1 class="display-2">FABFLIX</h1>
     <p class="lead">A simple movie collection website</p>
-</section>
+</section> -->
 
 <nav class="navbar bg-dark navbar-dark mb-4">
     <div class="container">
@@ -32,10 +35,15 @@
 
 <section id="movielist">
 	<div class="container">
-		<div id="movie_card_collection" class="row"></div>
+		<div id="movie_card_collection" class="row d-flex align-items-stretch"></div>
 	</div>
 </section>
 
+<section id="pagination">
+    <div class="container">
+
+    </div>
+</section>
 
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

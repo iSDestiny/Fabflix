@@ -154,6 +154,29 @@ public class MovieListServlet extends HttpServlet
 				statement = dbc.prepareStatement(query);
 				statement.setString(1, "%"+params.get("title")[0]+"%");
 			}
+			else if(params.containsKey("letter"))
+			{
+				query = "SELECT id, title, year, director, rating\r\n" + 
+						"FROM movies m, ratings r\r\n" +
+						"WHERE m.id = r.movieId AND m.title LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("letter")[0]+"%");
+			}
+			else if(params.containsKey("genre"))
+			{
+				query = "SELECT id, title, year, director, rating\r\n" + 
+						"FROM movies m, genres g, genres_in_movies gm, ratings r\r\n" + 
+						"WHERE m.id = gm.movieId AND g.id = gm.genreId AND g.name = ? AND m.id = r.movieId\r\n" +
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, params.get("genre")[0]);
+			}
 			else if(params.containsKey("year"))
 			{
 				query = "SELECT id, title, year, director, rating\r\n" + 
