@@ -1,5 +1,28 @@
+var sort = document.querySelector("#sort");
+var limit = document.querySelector("#limit")
+var prev = document.querySelector("#prev");
+var next = document.querySelector("#next");
+var current_page_element = document.querySelector("#current_page")
+var url = new URL(window.location.toString());
+var search_params = new URLSearchParams(url.search);
+var current_page = 0;
+
 function handleMovieListResult(resultData) {
 	createMovieCard(resultData);
+	current_page = parseInt(search_params.get("page"));
+	if(current_page === 1)
+	{
+		console.log("prev disabled");
+		prev.disabled = true;
+		prev.classList.add(disabled);
+	}
+	if(resultData.length === 0)
+	{
+		console.log("next disabled")
+		next.disabled = true;
+		next.classList.add("disabled");
+	}
+	current_page_element.textContent = current_page.toString();
 }
 
 function createMovieCard(data) {
@@ -39,11 +62,6 @@ function createMovieCard(data) {
 	}
 	
 }
-
-var sort = document.querySelector("#sort");
-var limit = document.querySelector("#limit")
-var url = new URL(window.location.toString());
-var search_params = new URLSearchParams(url.search);
 
 function setInitialLimitOption()
 {
@@ -140,6 +158,18 @@ sort.addEventListener("change", function(){
 limit.addEventListener("change", function(){
 	var option = this.options[this.selectedIndex].value;
 	search_params.set("limit", option);
+	url.search = search_params.toString();
+	window.location.href = url.toString();
+})
+
+prev.addEventListener("click", function(){
+	search_params.set("page", (current_page-1).toString());
+	url.search = search_params.toString();
+	window.location.href = url.toString();
+})
+
+next.addEventListener("click", function(){
+	search_params.set("page", (current_page+1).toString());
 	url.search = search_params.toString();
 	window.location.href = url.toString();
 })
