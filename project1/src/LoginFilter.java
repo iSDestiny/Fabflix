@@ -19,7 +19,7 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        System.out.println("LoginFilter: " + httpRequest.getRequestURI());
+        //System.out.println("LoginFilter: " + httpRequest.getRequestURI());
 
         // Check if the URL is allowed to be accessed without log in
         if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {

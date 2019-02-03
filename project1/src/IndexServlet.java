@@ -23,11 +23,15 @@ public class IndexServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String sessionId = session.getId();
         Long lastAccessTime = session.getLastAccessedTime();
-
+        User user = (User) session.getAttribute("user");
+  
         JsonObject responseJsonObject = new JsonObject();
         responseJsonObject.addProperty("sessionID", sessionId);
         responseJsonObject.addProperty("lastAccessTime", new Date(lastAccessTime).toString());
-
+        responseJsonObject.addProperty("user", user.getUsername());
+        responseJsonObject.addProperty("id", user.getId());
+        responseJsonObject.addProperty("cart", user.getCart().toString());
+        
         // write all the data into the jsonObject
         response.getWriter().write(responseJsonObject.toString());
     }
