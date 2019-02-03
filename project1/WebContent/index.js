@@ -10,11 +10,9 @@ function handleSessionData(resultDataString) {
     console.log(resultDataJson["sessionID"]);
 
     // show the session information 
-    $("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
-    $("#lastAccessTime").text("Last access time: " + resultDataJson["lastAccessTime"]);
+//     $("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
+//     $("#lastAccessTime").text("Last access time: " + resultDataJson["lastAccessTime"]);
 }
-
-
 
 $.ajax({
     type: "POST",
