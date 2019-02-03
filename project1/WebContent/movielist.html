@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+    	crossorigin="anonymous">
+    <title>Fablix</title>
+    <style>
+        .card{
+            width: 100%;
+        }
+        #sort{
+        	border: 0;
+        	color: white;
+        }
+       	#limit{
+        	border: 0;
+        	color: white;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body class="text-light">
+
+<nav id="navbar" class="navbar navbar-expand-lg navbar-dark mb-4">
+    <div class="container">
+        <a href="index.html" class="navbar-brand text-danger"><i class="fas fa-film"></i> Fabflix <i class="fas fa-film"></i></a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto text-light">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Browse<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Advanced Search</a>
+            </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<section id="header">
+    <div class="container">
+        <h1 class="text-center">
+            Search Results
+        </h1>
+        <div class="row">
+            <div class="ml-auto mr-auto mt-3">
+                Sort by:
+                <select id="sort" class="form-control d-inline-block w-auto ml-2 mr-5 bg-danger">
+	                <option value="0">Title ▼</option>
+	                <option value="1">Title ▲</option>
+	                <option value="2">Year ▼</option>
+	                <option value="3">Year ▲</option>
+	                <option value="4">Rating ▼</option>
+	                <option value="5">Rating ▲</option>
+                </select>
+                Movies Per Page:
+                <select id="limit" class="form-control d-inline-block w-auto ml-2 bg-danger">
+	                <option value="5">5</option>
+	                <option value="10">10</option>
+	                <option value="25">25</option>
+	                <option value="50">50</option>
+	                <option value="75">75</option>
+	                <option value="100">100</option>
+                </select>
+            </div>
+        </div>
+        <hr class="mb-4">
+    </div>
+</section>
+
+<section id="movielist">
+	<div class="container">
+		<div id="movie_card_collection" class="row d-flex align-items-stretch"></div>
+	</div>
+</section>
+
+<section id="pagination">
+    <div class="container">
+        <div class="row">
+            <ul class="mx-auto pagination">
+                <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Load jQuery and Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+<!-- pagination js plugin: http://pagination.js.org/ -->
+<script src="pagination.min.js"></script>
+<script src="movielist.js"></script>
+
+</body>
+</html>

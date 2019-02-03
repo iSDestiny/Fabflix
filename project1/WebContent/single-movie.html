@@ -12,30 +12,47 @@
     	crossorigin="anonymous">
     <title>Fablix</title>
     <style>
-    	#heading{
-    		background: url(images/space-background.jpg) center center / cover no-repeat;
-    	}
     	body{
-    		font-size: 1.2rem;
-    	}
+            font-size: 1.2rem;
+        }
     </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body>
+<body class="text-light">
 
-<!-- <section id="heading" class="jumbotron text-center mb-0 rounded-0 text-light">
-    <h1 class="display-2">FABFLIX</h1>
-    <p class="lead">A simple movie collection website</p>
-</section> -->
-
-<nav class="navbar bg-dark navbar-dark mb-4">
+<nav id="navbar" class="navbar navbar-expand-lg navbar-dark mb-4">
     <div class="container">
-        <a href="index.html" class="navbar-brand"><i class="fas fa-film"></i> Fabflix</a>
+        <a href="index.html" class="navbar-brand text-danger"><i class="fas fa-film"></i> Fabflix <i class="fas fa-film"></i></a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto text-light">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Browse<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Advanced Search</a>
+            </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
     </div>
 </nav>
 
 <section id="movie_details">
 	<div class="container">
+        <h1 class="text-center">
+            Movie Details
+        </h1>
+        <hr>
 		<div id="movie_body" class="row"></div>
+        <button id="backbtn" class="btn btn-danger btn-block btn-lg mt-4">
+            Back To Movies
+        </button>
 	</div>
 </section>
 

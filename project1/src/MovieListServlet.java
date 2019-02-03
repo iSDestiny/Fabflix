@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,6 +35,12 @@ public class MovieListServlet extends HttpServlet
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
+		HttpSession session = request.getSession();
+		StringBuffer URL = request.getRequestURL();
+		String urlQuery = request.getQueryString();
+		URL.replace(URL.indexOf("api/movies"), URL.length(), "movielist.html?" + urlQuery);
+		session.setAttribute("movielistURL", URL.toString());
+		
 		response.setContentType("application/json");
 		
 		PrintWriter out = response.getWriter();
@@ -140,11 +147,22 @@ public class MovieListServlet extends HttpServlet
 		String query = "";
 		PreparedStatement statement = null;
 		
-		if(params.size() <= 4)
+		if(params.size() == 3)
+		{
+			query = "SELECT m.id, title, year, director, rating\r\n" + 
+					"FROM movies m, ratings r\r\n" +
+					"WHERE m.id = r.movieId\r\n" + 
+					"ORDER BY SORT1 SORT2\r\n" + 
+					"LIMIT LIMITP\r\n" +
+					"OFFSET OFFSETP";
+			query = processQuery(query, params);
+			statement = dbc.prepareStatement(query);
+		}
+		else if(params.size() <= 4)
 		{
 			if(params.containsKey("title"))
 			{
-				query = "SELECT id, title, year, director, rating\r\n" + 
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, ratings r\r\n" +
 						"WHERE m.id = r.movieId AND m.title LIKE ?\r\n" + 
 						"ORDER BY SORT1 SORT2\r\n" + 
@@ -156,7 +174,7 @@ public class MovieListServlet extends HttpServlet
 			}
 			else if(params.containsKey("letter"))
 			{
-				query = "SELECT id, title, year, director, rating\r\n" + 
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, ratings r\r\n" +
 						"WHERE m.id = r.movieId AND m.title LIKE ?\r\n" + 
 						"ORDER BY SORT1 SORT2\r\n" + 
@@ -168,9 +186,10 @@ public class MovieListServlet extends HttpServlet
 			}
 			else if(params.containsKey("genre"))
 			{
-				query = "SELECT id, title, year, director, rating\r\n" + 
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, genres g, genres_in_movies gm, ratings r\r\n" + 
 						"WHERE m.id = gm.movieId AND g.id = gm.genreId AND g.name = ? AND m.id = r.movieId\r\n" +
+						"ORDER BY SORT1 SORT2\r\n" +
 						"LIMIT LIMITP\r\n" +
 						"OFFSET OFFSETP";
 				query = processQuery(query, params);
@@ -179,7 +198,7 @@ public class MovieListServlet extends HttpServlet
 			}
 			else if(params.containsKey("year"))
 			{
-				query = "SELECT id, title, year, director, rating\r\n" + 
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, ratings r\r\n" +
 						"WHERE m.id = r.movieId AND m.year = ?\r\n" + 
 						"ORDER BY SORT1 SORT2\r\n" + 
@@ -191,7 +210,7 @@ public class MovieListServlet extends HttpServlet
 			}
 			else if(params.containsKey("director"))
 			{
-				query = "SELECT id, title, year, director, rating\r\n" + 
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, ratings r\r\n" +
 						"WHERE m.id = r.movieId AND m.director LIKE ?\r\n" + 
 						"ORDER BY SORT1 SORT2\r\n" + 
@@ -219,7 +238,7 @@ public class MovieListServlet extends HttpServlet
 		{
 			if(params.containsKey("title") && params.containsKey("year"))
 			{
-				query = "SELECT id, title, year, director, rating\r\n" + 
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, ratings r\r\n" +
 						"WHERE m.id = r.movieId AND m.title LIKE ? AND m.year = ?\r\n" + 
 						"ORDER BY SORT1 SORT2\r\n" + 
@@ -232,7 +251,7 @@ public class MovieListServlet extends HttpServlet
 			}
 			else if(params.containsKey("title") && params.containsKey("director"))
 			{
-				query = "SELECT id, title, year, director, rating\r\n" + 
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, ratings r\r\n" +
 						"WHERE m.id = r.movieId AND m.title LIKE ? AND m.director LIKE ?\r\n" + 
 						"ORDER BY SORT1 SORT2\r\n" + 
@@ -258,7 +277,7 @@ public class MovieListServlet extends HttpServlet
 			}
 			else if(params.containsKey("director") && params.containsKey("year"))
 			{
-				query = "SELECT id, title, year, director, rating\r\n" + 
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, ratings r\r\n" +
 						"WHERE m.id = r.movieId AND m.director LIKE ? AND m.year = ?\r\n" + 
 						"ORDER BY SORT1 SORT2\r\n" + 
@@ -300,7 +319,7 @@ public class MovieListServlet extends HttpServlet
 		{
 			if(params.containsKey("title") && params.containsKey("year") && params.containsKey("director"))
 			{
-				query = "SELECT id, title, year, director, rating\r\n" + 
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, ratings r\r\n" +
 						"WHERE m.id = r.movieId AND m.title LIKE ? AND m.year = ? AND m.director LIKE ?\r\n" + 
 						"ORDER BY SORT1 SORT2\r\n" + 
@@ -404,6 +423,18 @@ public class MovieListServlet extends HttpServlet
 			else if(params.get("sort")[0].equals("ratingdesc"))
 			{
 				resultQuery = query.replaceAll("SORT1", "rating");
+				resultQuery = resultQuery.replaceAll("SORT2", "DESC");
+				System.out.println("ratingasc " + resultQuery);
+			}
+			else if(params.get("sort")[0].equals("yearasc"))
+			{
+				resultQuery = query.replaceAll("SORT1", "year");
+				resultQuery = resultQuery.replaceAll("SORT2", "ASC");
+				System.out.println("ratingasc " + resultQuery);
+			}
+			else if(params.get("sort")[0].equals("yeardesc"))
+			{
+				resultQuery = query.replaceAll("SORT1", "year");
 				resultQuery = resultQuery.replaceAll("SORT2", "DESC");
 				System.out.println("ratingasc " + resultQuery);
 			}
