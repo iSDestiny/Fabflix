@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Login to Fabflix</title>
+</head>
+
+<body>
+<!-- Flex bootstrap -->
+<style>
+	#login_form{
+		margin-bottom: 20px;
+		background-color: rgb(0, 0, 0, 0.7);
+	}
+	
+	body{
+		background: url(http://kevinbazira.com/images/home_writer_blog_intro4.jpg) center center / cover no-repeat;
+		background-attachment: fixed;
+	}
+
+</style>
+<div id = "body" class="container">
+	<div class="p-2 d-flex flex-row justify-content-center flex-container">
+		<div>
+			<form id="login_form" class="p-5 mt-3 text-white" method="post" action="#">
+				<h3> Login to Fabflix</h3>
+			  <div class="form-group">
+			    <label for="exampleInputEmail1">Email address</label>
+			    <input type="email" class="form-control" name = "username" aria-describedby="emailHelp" placeholder="Enter email">
+			    <small id="emailHelp" class="form-text text-muted text-white">We'll never share your email with anyone else.</small>
+			  </div>
+			  <div class="form-group">
+			    <label for="exampleInputPassword1">Password</label>
+			    <input type="password" class="form-control" name="password" placeholder="Password">
+			  </div>
+			  <button type="submit" class="btn btn-danger btn-block">Login</button>
+			  <div id="login_error_message" class = p-2></div>
+			</form>
+		</div>
+	</div>
+		<!-- include jQuery-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<!-- include our own JS file -->
+		<script src="./login.js"></script>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
