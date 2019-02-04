@@ -10,17 +10,22 @@ var current_page = 0;
 function handleMovieListResult(resultData) {
 	createMovieCard(resultData);
 	current_page = parseInt(search_params.get("page"));
+	var movieCardCollection = jQuery("#movie_card_collection");
 	if(current_page === 1)
 	{
-		console.log("prev disabled");
 		prev.disabled = true;
 		prev.classList.add("disabled");
 	}
-	if(resultData.length === 0)
+	
+	if(resultData.length <= search_params.get("limit"))
 	{
-		console.log("next disabled")
 		next.disabled = true;
 		next.classList.add("disabled");
+	}
+
+	if(resultData.length === 0)
+	{
+		movieCardCollection.append('<h3 class="text-center d-flex justify-content-center mx-auto mt-2 mb-4">No Results Found</h3>');
 	}
 	current_page_element.textContent = current_page.toString();
 }

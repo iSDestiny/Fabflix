@@ -1,6 +1,6 @@
 var search_url = new URL(window.location.toString());
 var search_inputs = document.querySelectorAll("#search_form input");
-var search_submit = document.querySelector("#search_submit_button")
+var search_submit = document.querySelector("#search_submit_button");
 
 $( "#search_form" ).submit(function( event ) {
     event.preventDefault();
