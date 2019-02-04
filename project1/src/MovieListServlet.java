@@ -1,5 +1,3 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -16,41 +14,46 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Date;
+
+import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * Servlet implementation class MovieListServlet
  */
 @WebServlet(name = "MovieListServlet", urlPatterns = "/api/movies")
-public class MovieListServlet extends HttpServlet {
+public class MovieListServlet extends HttpServlet 
+{
 	private static final long serialVersionUID = 1L;
        
     // Create a dataSource which registered in web.xml
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
-	
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
+		HttpSession session = request.getSession();
+		StringBuffer URL = request.getRequestURL();
+		String urlQuery = request.getQueryString();
+		URL.replace(URL.indexOf("api/movies"), URL.length(), "movielist.html?" + urlQuery);
+		session.setAttribute("movielistURL", URL.toString());
+		
 		response.setContentType("application/json");
 		
 		PrintWriter out = response.getWriter();
 		
+		Map<String, String[]> params = request.getParameterMap();
+		System.out.println(params.toString());
+		
 		try {
 			Connection dbc = dataSource.getConnection();
-			Statement statement = dbc.createStatement();
+			PreparedStatement statement = buildQuery(dbc, params);
 			
-			String query = 
-					"SELECT id, title, year, director, rating\r\n" + 
-					"FROM movies m, ratings r\r\n" + 
-					"WHERE m.id = r.movieId \r\n" + 
-					"ORDER BY r.rating DESC\r\n" + 
-					"LIMIT 20";
 			
-			ResultSet rs = statement.executeQuery(query);
+			ResultSet rs = statement.executeQuery();
 			
 			JsonArray jsonArray = new JsonArray();
 			
@@ -137,5 +140,324 @@ public class MovieListServlet extends HttpServlet {
 			jsonObject.addProperty("errorMessage", e.getMessage());
 			out.write(jsonObject.toString());
 		}
+	}
+	
+	private PreparedStatement buildQuery(Connection dbc, Map<String, String[]> params) throws SQLException
+	{
+		String query = "";
+		PreparedStatement statement = null;
+		
+		if(params.size() == 3)
+		{
+			query = "SELECT m.id, title, year, director, rating\r\n" + 
+					"FROM movies m, ratings r\r\n" +
+					"WHERE m.id = r.movieId\r\n" + 
+					"ORDER BY SORT1 SORT2\r\n" + 
+					"LIMIT LIMITP\r\n" +
+					"OFFSET OFFSETP";
+			query = processQuery(query, params);
+			statement = dbc.prepareStatement(query);
+		}
+		else if(params.size() <= 4)
+		{
+			if(params.containsKey("title"))
+			{
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
+						"FROM movies m, ratings r\r\n" +
+						"WHERE m.id = r.movieId AND m.title LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("title")[0]+"%");
+			}
+			else if(params.containsKey("letter"))
+			{
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
+						"FROM movies m, ratings r\r\n" +
+						"WHERE m.id = r.movieId AND m.title LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("letter")[0]+"%");
+			}
+			else if(params.containsKey("genre"))
+			{
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
+						"FROM movies m, genres g, genres_in_movies gm, ratings r\r\n" + 
+						"WHERE m.id = gm.movieId AND g.id = gm.genreId AND g.name = ? AND m.id = r.movieId\r\n" +
+						"ORDER BY SORT1 SORT2\r\n" +
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, params.get("genre")[0]);
+			}
+			else if(params.containsKey("year"))
+			{
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
+						"FROM movies m, ratings r\r\n" +
+						"WHERE m.id = r.movieId AND m.year = ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, params.get("year")[0]);
+			}
+			else if(params.containsKey("director"))
+			{
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
+						"FROM movies m, ratings r\r\n" +
+						"WHERE m.id = r.movieId AND m.director LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("director")[0]+"%");
+			}
+			else 
+			{
+				query = "SELECT m.id, title, year, director, rating, name\r\n" + 
+						"FROM movies m, ratings r, stars_in_movies sm, stars s \r\n" + 
+						"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" + 
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("star")[0]+"%");
+			}
+		}
+		
+		else if(params.size() == 5)
+		{
+			if(params.containsKey("title") && params.containsKey("year"))
+			{
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
+						"FROM movies m, ratings r\r\n" +
+						"WHERE m.id = r.movieId AND m.title LIKE ? AND m.year = ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("title")[0]+"%");
+				statement.setString(2, params.get("year")[0]);
+			}
+			else if(params.containsKey("title") && params.containsKey("director"))
+			{
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
+						"FROM movies m, ratings r\r\n" +
+						"WHERE m.id = r.movieId AND m.title LIKE ? AND m.director LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("title")[0]+"%");
+				statement.setString(1, "%"+params.get("director")[0]+"%");
+			}
+			else if(params.containsKey("title") && params.containsKey("star"))
+			{
+				query = "SELECT m.id, title, year, director, rating, name\r\n" + 
+						"FROM movies m, ratings r, stars_in_movies sm, stars s \r\n" + 
+						"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ? AND m.title LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" + 
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("star")[0]+"%");
+				statement.setString(2, "%"+params.get("title")[0]+"%");
+			}
+			else if(params.containsKey("director") && params.containsKey("year"))
+			{
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
+						"FROM movies m, ratings r\r\n" +
+						"WHERE m.id = r.movieId AND m.director LIKE ? AND m.year = ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("director")[0]+"%");
+				statement.setString(2, params.get("year")[0]);
+			}
+			else if(params.containsKey("director") && params.containsKey("star"))
+			{
+				query = "SELECT m.id, title, year, director, rating, name\r\n" + 
+						"FROM movies m, ratings r, stars_in_movies sm, stars s \r\n" + 
+						"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ? AND m.director LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" + 
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("star")[0]+"%");
+				statement.setString(2, "%"+params.get("director")[0]+"%");
+			}
+			else
+			{
+				query = "SELECT m.id, title, year, director, rating, name\r\n" + 
+						"FROM movies m, ratings r, stars_in_movies sm, stars s \r\n" + 
+						"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ? AND m.year = ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" + 
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("star")[0]+"%");
+				statement.setString(2, params.get("year")[0]);
+			}	
+		}
+		else if(params.size() == 6)
+		{
+			if(params.containsKey("title") && params.containsKey("year") && params.containsKey("director"))
+			{
+				query = "SELECT m.id, title, year, director, rating\r\n" + 
+						"FROM movies m, ratings r\r\n" +
+						"WHERE m.id = r.movieId AND m.title LIKE ? AND m.year = ? AND m.director LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" +
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("title")[0]+"%");
+				statement.setString(3, "%"+params.get("director")[0]+"%");
+				statement.setString(2, params.get("year")[0]);
+			}
+			else if(params.containsKey("title") && params.containsKey("year") && params.containsKey("star"))
+			{
+				query = "SELECT m.id, title, year, director, rating, name\r\n" + 
+						"FROM movies m, ratings r, stars_in_movies sm, stars s \r\n" + 
+						"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ? AND m.year = ? AND m.title LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" + 
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("star")[0]+"%");
+				statement.setString(2, params.get("year")[0]);
+				statement.setString(3, "%"+params.get("title")[0]+"%");
+			}	
+			else if(params.containsKey("title") && params.containsKey("director") && params.containsKey("star"))
+			{
+				query = "SELECT m.id, title, year, director, rating, name\r\n" + 
+						"FROM movies m, ratings r, stars_in_movies sm, stars s \r\n" + 
+						"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ? AND m.director LIKE ? AND m.title LIKE ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" + 
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("star")[0]+"%");
+				statement.setString(2, "%"+params.get("director")[0]+"%");
+				statement.setString(3, "%"+params.get("title")[0]+"%");
+			}
+			else
+			{
+				query = "SELECT m.id, title, year, director, rating, name\r\n" + 
+						"FROM movies m, ratings r, stars_in_movies sm, stars s \r\n" + 
+						"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ? AND m.director LIKE ? AND m.year = ?\r\n" + 
+						"ORDER BY SORT1 SORT2\r\n" + 
+						"LIMIT LIMITP\r\n" + 
+						"OFFSET OFFSETP";
+				query = processQuery(query, params);
+				statement = dbc.prepareStatement(query);
+				statement.setString(1, "%"+params.get("star")[0]+"%");
+				statement.setString(2, "%"+params.get("director")[0]+"%");
+				statement.setString(3, params.get("year")[0]);
+			}
+		}
+		else
+		{
+			query = "SELECT m.id, title, year, director, rating, name\r\n" + 
+					"FROM movies m, ratings r, stars_in_movies sm, stars s \r\n" + 
+					"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ? AND m.director LIKE ? AND m.year = ? AND m.title = ?\r\n" + 
+					"ORDER BY SORT1 SORT2\r\n" + 
+					"LIMIT LIMITP\r\n" + 
+					"OFFSET OFFSETP";
+			query = processQuery(query, params);
+			statement = dbc.prepareStatement(query);
+			statement.setString(1, "%"+params.get("star")[0]+"%");
+			statement.setString(2, "%"+params.get("director")[0]+"%");
+			statement.setString(3, params.get("year")[0]);	
+			statement.setString(4, "%"+params.get("title")[0]+"%");
+		}
+
+		System.out.println(query);
+		System.out.println(statement.toString());
+		return statement;
+	}
+	
+	String processQuery(String query, Map<String, String[]> params)
+	{
+		String resultQuery = query;
+		int offset;
+		
+		if(params.containsKey("sort"))
+		{
+			if(params.get("sort")[0].equals("titleasc"))
+			{
+				resultQuery = query.replaceAll("SORT1", "title");
+				resultQuery = resultQuery.replaceAll("SORT2", "ASC");
+				System.out.println("titleasc " + resultQuery);
+			}
+			else if(params.get("sort")[0].equals("titledesc"))
+			{
+				resultQuery = query.replaceAll("SORT1", "title");
+				resultQuery = resultQuery.replaceAll("SORT2", "DESC");
+				System.out.println("titledesc " + resultQuery);
+			}
+			else if(params.get("sort")[0].equals("ratingasc"))
+			{
+				resultQuery = query.replaceAll("SORT1", "rating");
+				resultQuery = resultQuery.replaceAll("SORT2","ASC");
+				System.out.println("ratingasc " + resultQuery);
+			}
+			else if(params.get("sort")[0].equals("ratingdesc"))
+			{
+				resultQuery = query.replaceAll("SORT1", "rating");
+				resultQuery = resultQuery.replaceAll("SORT2", "DESC");
+				System.out.println("ratingasc " + resultQuery);
+			}
+			else if(params.get("sort")[0].equals("yearasc"))
+			{
+				resultQuery = query.replaceAll("SORT1", "year");
+				resultQuery = resultQuery.replaceAll("SORT2", "ASC");
+				System.out.println("ratingasc " + resultQuery);
+			}
+			else if(params.get("sort")[0].equals("yeardesc"))
+			{
+				resultQuery = query.replaceAll("SORT1", "year");
+				resultQuery = resultQuery.replaceAll("SORT2", "DESC");
+				System.out.println("ratingasc " + resultQuery);
+			}
+		}
+		else
+		{
+			resultQuery = query.replaceAll("SORT1", "title");
+			resultQuery = resultQuery.replaceAll("SORT2", "ASC");
+			System.out.println("default " + resultQuery);
+		}
+		
+		if(params.containsKey("limit") && params.containsKey("page"))
+		{
+			resultQuery = resultQuery.replaceAll("LIMITP", params.get("limit")[0]);
+			offset = (Integer.parseInt(params.get("page")[0]) - 1) * Integer.parseInt(params.get("limit")[0]);
+			resultQuery = resultQuery.replaceAll("OFFSETP", Integer.toString(offset));
+		}
+		else
+		{
+			resultQuery = resultQuery.replaceAll("LIMITP", "25");
+			resultQuery = resultQuery.replaceAll("OFFSETP", "0");
+		}
+		
+		return resultQuery;
 	}
 }

@@ -42,7 +42,7 @@ public class SingleMovieServlet extends HttpServlet {
 
 			ResultSet rs = statement.executeQuery();
 			JsonArray jsonArray = new JsonArray();
-
+			
 			while (rs.next()) 
 			{
 				String movieId = rs.getString("id");
@@ -57,7 +57,8 @@ public class SingleMovieServlet extends HttpServlet {
 				jsonObject.addProperty("movie_year", movieYear);
 				jsonObject.addProperty("movie_director", movieDirector);
 				jsonObject.addProperty("movie_rating", movie_rating);
-
+				jsonObject.addProperty("movie_list_url", (String) request.getSession().getAttribute("movielistURL"));
+				
 				// Genre List Query
 				String genresQuery = 
 						"SELECT name\r\n" + 

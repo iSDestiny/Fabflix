@@ -4,12 +4,12 @@ function handleMovieResult(resultData) {
 
 function createMovieDetails(data) {
 	var movieDetails = jQuery("#movie_body");
-	
+	var backbtn = document.querySelector("#backbtn");
 	for(var i = 0; i < data.length; ++i)
 	{
 
 		var rowHTML =  '<div class="col-12">';
-		rowHTML += "<div class=\"card bg-light\">";
+		rowHTML += "<div class=\"card mt-3 bg-dark\">";
 		rowHTML += "<div class=\"card-body\">";
 		rowHTML += "<h2 class=\"card-title\">" + data[i]["movie_title"] +
 			" (" + data[i]["movie_year"] + ")" + "</h5>";
@@ -33,12 +33,23 @@ function createMovieDetails(data) {
 		});
 		rowHTML = rowHTML.slice(0, rowHTML.lastIndexOf(",")) + "</p>";
 		
-		rowHTML += '<button type="button" class="btn btn-success mt-2">Add to cart</button>'
+		rowHTML += '<button type="button" class="btn btn-danger mt-2">Add to cart</button>'
 		
 		rowHTML += "</div></div></div>";
 		movieDetails.append(rowHTML);
 	}
-	
+
+	backbtn.addEventListener("click", function(){
+		var movieListURL = data[0]["movie_list_url"];	
+		if(movieListURL == null)
+		{
+			window.location.href = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname + "?limit=10&sort=ratingdesc&page=1";
+		}
+		else
+		{
+			window.location.href = movieListURL;
+		}
+	})
 }
 
 function getParameterByName(target) {
