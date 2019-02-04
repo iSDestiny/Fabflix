@@ -55,7 +55,11 @@ function createMovieCard(data) {
 		});
 		rowHTML = rowHTML.slice(0, rowHTML.lastIndexOf(",")) + "</p>";
 		
-		rowHTML += '<button type="button" class="btn btn-danger mt-2">Add to cart</button>'
+		rowHTML += '<a href="cart.html?movie_id=' + data[i]["movie_id"] + '&quantity=1" class="btn btn-success mt-2"'
+			+ '>Add to cart</a>';
+			
+//			'<button type="submit" class="btn btn-success mt-2"' +  ' formaction= "localhost:8080/project1/cart.html?movie_id=' 
+//		+ data[i]["movie_id"] + '&quantity=1"' + ">Add to cart</button>";
 		
 		rowHTML += '</div></div></div><div class="w-100"></div>';
 		movieCardCollection.append(rowHTML);

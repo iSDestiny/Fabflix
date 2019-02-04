@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
         	
 	        Connection dbcon = dataSource.getConnection();
 	
-			String query = "SELECT email,password from customers where email = ?";
+			String query = "SELECT id,email,password from customers where email = ?";
 			PreparedStatement statement = dbcon.prepareStatement(query);
 			statement.setString(1, username);
 			
@@ -43,9 +43,11 @@ public class LoginServlet extends HttpServlet {
 				if (password.equals(rs.getString("password"))) {
 					// Login succeeds
 					// Set this user into current session
+					request.getSession().invalidate();
+					Cart cart = new Cart();
 					String sessionId = ((HttpServletRequest) request).getSession().getId();
 					Long lastAccessTime = ((HttpServletRequest) request).getSession().getLastAccessedTime();
-					request.getSession().setAttribute("user", new User(username));
+					request.getSession().setAttribute("user", new User(rs.getInt("id"), username, cart));
 					responseJsonObject.addProperty("status", "success");
 					responseJsonObject.addProperty("message", "success");
 				}

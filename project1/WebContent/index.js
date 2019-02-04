@@ -8,6 +8,8 @@ function handleSessionData(resultDataString) {
     console.log("handle session response");
     console.log(resultDataJson);
     console.log(resultDataJson["sessionID"]);
+    console.log(resultDataJson["id"]);
+    console.log(resultDataJson["cart"]);
 
     // show the session information 
 //     $("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
