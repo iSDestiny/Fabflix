@@ -182,7 +182,7 @@ public class MovieListServlet extends HttpServlet
 						"OFFSET OFFSETP";
 				query = processQuery(query, params);
 				statement = dbc.prepareStatement(query);
-				statement.setString(1, "%"+params.get("letter")[0]+"%");
+				statement.setString(1, params.get("letter")[0]+"%");
 			}
 			else if(params.containsKey("genre"))
 			{
@@ -378,7 +378,7 @@ public class MovieListServlet extends HttpServlet
 		{
 			query = "SELECT m.id, title, year, director, rating, name\r\n" + 
 					"FROM movies m, ratings r, stars_in_movies sm, stars s \r\n" + 
-					"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ? AND m.director LIKE ? AND m.year = ? AND m.title = ?\r\n" + 
+					"WHERE m.id = r.movieId AND m.id = sm.movieId AND s.id = sm.starId AND s.name LIKE ? AND m.director LIKE ? AND m.year = ? AND m.title LIKE ?\r\n" + 
 					"ORDER BY SORT1 SORT2\r\n" + 
 					"LIMIT LIMITP\r\n" + 
 					"OFFSET OFFSETP";

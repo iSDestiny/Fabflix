@@ -35,9 +35,13 @@
                 <a class="nav-link" href="search.html">Advanced Search</a>
             </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-danger my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+            <form action="movielist.html" id="quick_search" class="form-inline my-2 my-lg-0">
+                <div class="input-group my my-lg-0 nav-item">
+                    <input type="search" name="search_query" class="form-control" placeholder="Quick Search" aria-label="Quick Search" aria-describedby="Search">
+                    <div class="input-group-append">
+                        <button id="quick_search_submit" class="btn btn-danger" type="button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -64,6 +68,7 @@
     crossorigin="anonymous"></script>
 
 <script src="single-movie.js"></script>
+<script src="quick_search.js"></script>
 
 </body>
 </html>

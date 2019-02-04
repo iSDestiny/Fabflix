@@ -1,0 +1,46 @@
+#letter_content {
+    padding: 0px 10%;
+}
+
+#browse_content {
+    padding: 10px 10%;
+}
+
+#browse_content button {
+    width: 120px;
+}
+
+.btn-grid {
+    flex-wrap: wrap; 
+}
+
+.btn-grid button {
+    width: 80px;
+    border-radius: 0px;
+    border: 1px solid white;
+}
+
+.btn-grid button:hover {
+    border-radius: 0px;
+    border: 1px solid white;
+}
+
+.btn-grid > .btn:nth-child(7n+7+1) {
+    clear: left;
+    margin-left: 0;
+}
+.btn-grid > .btn:nth-child(n+7+1) {
+    margin-top: -1px;
+}
+.btn-grid > .btn:first-child {
+    border-bottom-left-radius: 0;
+}
+.btn-grid > .btn:nth-child(7) {
+    border-top-right-radius: 4px !important;
+}
+.btn-grid > .btn:nth-last-child(7) {
+    border-bottom-left-radius: 4px !important;
+}
+.btn-grid > .btn:last-child {
+    border-top-right-radius: 0;
+}

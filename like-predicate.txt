@@ -1,0 +1,13 @@
+The LIKE clause was used for searching/browsing on the following parameters:
+title, director, star name, first character.
+
+For the title, director, and star name, the clause used for LIKE was 
+LIKE '%search_query%' where search_query is the field given by the user 
+for the specific parameter. This clause makes it so the user will be
+given results where the search query is found anywhere within the parameter.
+
+For the first character parameter, the clause used was LIKE 'character%' where
+character is the character the user selected to search the movie title for. This 
+clause makes it so the user is given results where the title has to start with 
+the given character and maps it to anything, as long as the title starts with that
+character.
