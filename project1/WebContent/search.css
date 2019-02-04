@@ -1,0 +1,11 @@
+#search_submit_button{
+    width: 150px
+}
+
+#search_form{
+    padding: 0px 15%;
+}
+
+.search_label{
+    padding-left: 1px;
+}

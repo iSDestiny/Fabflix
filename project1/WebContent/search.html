@@ -31,11 +31,11 @@
                 <a class="nav-link" href="search.html">Advanced Search</a>
             </li>
             </ul>
-            <form action="movielist.html" class="form-inline my-2 my-lg-0">
+            <form action="movielist.html" id="quick_search" class="form-inline my-2 my-lg-0">
                 <div class="input-group my my-lg-0 nav-item">
-                    <input type="search" class="form-control" placeholder="Quick Search" aria-label="Quick Search" aria-describedby="Search">
+                    <input type="search" name="search_query" class="form-control" placeholder="Quick Search" aria-label="Quick Search" aria-describedby="Search">
                     <div class="input-group-append">
-                        <button class="btn btn-danger" type="button"><i class="fas fa-search"></i></button>
+                        <button id="quick_search_submit" class="btn btn-danger" type="button"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
             </form>
@@ -43,11 +43,38 @@
     </div>
 </nav>
 
-<section id="search_body">
+<section id="search_header">
 	<div class="container">
+        <h1 class="text-center">
+            Search
+        </h1>
+        <hr class="mb-4">
 	</div>
 </section>
 
+<section id="search_body">
+    <div class="container">
+        <form id="search_form" action="movielist.html">
+            <div class="form-group row">
+                <label for="title" class="col-md-3 col-lg-2 pr-5 search_label text-md-right">Title</label>
+                <input type="search" class="form-control col-md-9 col-lg-10" name="title" id="title" placeholder="Enter title">
+            </div>
+            <div class="form-group row">
+                <label for="year" class="col-md-3 col-lg-2 pr-5 search_label text-md-right">Year</label>
+                <input type="search" class="form-control col-md-9 col-lg-10" name="year" id="year" placeholder="Enter year">
+            </div>
+            <div class="form-group row">
+                <label for="director" class="col-md-3 col-lg-2 pr-5 search_label text-md-right">Director</label>
+                <input type="search" class="form-control col-md-9 col-lg-10" name="director" id="director" placeholder="Enter director">
+            </div>
+            <div class="form-group row">
+                <label for="star" class="col-md-3 col-lg-2 pr-5 search_label text-md-right">Star</label>
+                <input type="search" class="form-control col-md-9 col-lg-10" name="star" id="star" placeholder="Enter star name">
+            </div>
+            <button id="search_submit_button" type="submit" class="btn btn-danger mx-auto d-flex justify-content-center">Search</button>
+        </form>
+    </div>
+</section>
 
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -56,6 +83,7 @@
     crossorigin="anonymous"></script>
 
 <script src="search.js"></script>
+<script src="quick_search.js"></script>
 
 </body>
 </html>

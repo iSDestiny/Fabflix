@@ -14,7 +14,7 @@ function handleMovieListResult(resultData) {
 	{
 		console.log("prev disabled");
 		prev.disabled = true;
-		prev.classList.add(disabled);
+		prev.classList.add("disabled");
 	}
 	if(resultData.length === 0)
 	{
