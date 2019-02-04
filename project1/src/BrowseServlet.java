@@ -25,22 +25,46 @@ import java.util.Map;
 public class BrowseServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    // Create a dataSource which registered in web.xml
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
-	
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	@Resource(name = "jdbc/moviedb")
+	private DataSource dataSource;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		response.setContentType("application/json");
-		
+
 		PrintWriter out = response.getWriter();
-		
-		
+
+		try 
+		{
+			Connection dbcon = dataSource.getConnection();
+
+			String query = "SELECT name FROM genres";
+
+			PreparedStatement statement = dbcon.prepareStatement(query);
+
+			ResultSet rs = statement.executeQuery();
+			JsonArray jsonArray = new JsonArray();
+			
+			while (rs.next()) 
+			{
+				String genre = rs.getString("name");
+				jsonArray.add(genre);
+			}
+			
+            // write JSON string to output
+            out.write(jsonArray.toString());
+            // set response status to 200 (OK)
+            response.setStatus(200);
+            
+            rs.close();
+            statement.close();
+            dbcon.close();
+			
+		} catch(Exception e) {
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("errorMessage", e.getMessage());
+			out.write(jsonObject.toString());
+		}
 	}
-
-
-
 }

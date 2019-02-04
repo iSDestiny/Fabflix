@@ -181,7 +181,7 @@ public class MovieListServlet extends HttpServlet
 						"OFFSET OFFSETP";
 				query = processQuery(query, params);
 				statement = dbc.prepareStatement(query);
-				statement.setString(1, "%"+params.get("letter")[0]+"%");
+				statement.setString(1, params.get("letter")[0]+"%");
 			}
 			else if(params.containsKey("genre"))
 			{
