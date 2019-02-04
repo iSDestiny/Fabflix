@@ -53,6 +53,7 @@ public class SingleStarServlet extends HttpServlet {
 				jsonObject.addProperty("star_id", starId);
 				jsonObject.addProperty("star_name", starName);
 				jsonObject.addProperty("star_dob", starDob);
+				jsonObject.addProperty("movie_list_url", (String) request.getSession().getAttribute("movielistURL"));
 				
 				String moviesQuery = "SELECT m.id, m.title\r\n" +
 									 "FROM movies m, stars s, stars_in_movies sm\r\n" +

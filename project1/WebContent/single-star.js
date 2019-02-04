@@ -11,7 +11,7 @@ function createStarDetails(data) {
 	{
         console.log("in loop");
 		var rowHTML =  '<div class="col-12">';
-		rowHTML += "<div class=\"card bg-light\">";
+		rowHTML += "<div class=\"card mt-3 bg-dark text-light\">";
 		rowHTML += "<div class=\"card-body\">";
 		rowHTML += "<h2 class=\"card-title\">" + data[i]["star_name"] + "</h5>";
 		rowHTML += '<p class="card-text mb-1"><strong>ID</strong>: ' + data[i]["star_id"] + "</p>"; 
@@ -25,13 +25,27 @@ function createStarDetails(data) {
 		});
 		rowHTML = rowHTML.slice(0, rowHTML.lastIndexOf(",")) + "</p>";
 		
-		rowHTML += '<button type="button" class="btn btn-success mt-2">Add to cart</button>'
+		rowHTML += '<button type="button" class="btn btn-danger mt-2">Add to cart</button>'
 		
 		rowHTML += "</div></div></div>";
 		movieDetails.append(rowHTML);
 	}
 	
+	backbtn.addEventListener("click", function(){
+		var movieListURL = data[0]["movie_list_url"];	
+		if(movieListURL == null)
+		{
+			window.location.href = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname + "?limit=10&sort=ratingdesc&page=1";
+		}
+		else
+		{
+			window.location.href = movieListURL;
+		}
+	})
 }
+
+var backbtn = document.querySelector("#backbtn");
+
 
 function getParameterByName(target) {
     // Get request URL
