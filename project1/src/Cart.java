@@ -1,13 +1,18 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Cart {
-	Map<String, Integer> items = new HashMap<String, Integer>();
+	Map<ArrayList<String>, Integer> items = new HashMap<ArrayList<String>, Integer>();
 
 	public Cart() {};
 	
-	public void add(String item, String qt)
+	public void add(String id, String title, String qt)
 	{
+		ArrayList<String> item = new ArrayList<String>();
+		item.add(id);
+		item.add(title);
+		
 		if (items.containsKey(item))
 		{
 			int quantity = Integer.parseInt(qt);
@@ -20,14 +25,24 @@ public class Cart {
 		}
 	}
 	
-	public void delete(String item)
+	public void delete(String id, String title)
 	{
+		ArrayList<String> item = new ArrayList<String>();
+		item.add(id);
+		item.add(title);
+		
 		items.remove(item);
 	}
 	
-	public void update(String item, int quantity)
+	public void update(String id, String title, String qt)
 	{
-		items.put(item, quantity);
+		ArrayList<String> item = new ArrayList<String>();
+		item.add(id);
+		item.add(title);
+		
+		int quantity = Integer.parseInt(qt);
+		
+		items.replace(item, quantity);
 	}
 	
 	public String toString()
@@ -35,7 +50,7 @@ public class Cart {
 		return items.toString();
 	}
 	
-	public Map<String, Integer> getItems()
+	public Map<ArrayList<String>, Integer> getItems()
 	{
 		return items;
 	}

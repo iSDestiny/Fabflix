@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -21,8 +22,8 @@ import com.google.gson.JsonObject;
 /**
  * Servlet implementation class CartServlet
  */
-@WebServlet(name = "CartServlet", urlPatterns = "/api/cart")
-public class CartServlet extends HttpServlet {
+@WebServlet(name = "ConfirmationServlet", urlPatterns = "/api/confirmation")
+public class ConfirmationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	@Resource(name = "jdbc/moviedb")
@@ -31,7 +32,7 @@ public class CartServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CartServlet() {
+    public ConfirmationServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -43,55 +44,38 @@ public class CartServlet extends HttpServlet {
 		response.setContentType("application/json");
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
+		int id = user.getId();
 		PrintWriter out = response.getWriter();
+		Long lastAccessTime = session.getLastAccessedTime();
+		Date saleDate = new Date(lastAccessTime);
 		
 		try
 		{
 			Connection dbc = dataSource.getConnection();
 			Statement statement = dbc.createStatement();
-	
-			if (request.getParameter("quantity") != null)
-			{
-				String id = request.getParameter("movie_id");
-				String qt = request.getParameter("quantity");
-				String update = request.getParameter("update");
-				String query = 
-						"SELECT title from movies where id = ?";
-				
-				PreparedStatement Statement = dbc.prepareStatement(query);
-				
-				Statement.setString(1, id);
-				
-				ResultSet rs = Statement.executeQuery();
-				
-				while (rs.next())
-				{
-					if (Integer.parseInt(qt) == 0)
-					{
-						user.getCart().delete(id, rs.getString("title"));
-					}
-					else
-					{
-						if (update.equals("true"))
-						{
-							user.getCart().update(id, rs.getString("title"), qt);
-						}
-						else
-							user.getCart().add(id, rs.getString("title"), qt);
-					}
-				}
-				rs.close();
-			}
 			
 			JsonArray jsonArray = new JsonArray();
 	
 			for (ArrayList<String> key: user.getCart().getItems().keySet())
 			{
+				for (int i = 0; i < user.getCart().getItems().get(key); i++)
+				{
+					statement.executeUpdate("insert into sales (customerId, movieId, saleDate)"
+							+ " values ( " + id + ", " + "'" + key.get(0) + "', " + "'" + saleDate + "')");
+				}
 				JsonObject jsonObject = new JsonObject();
-				jsonObject.addProperty("movie_id", key.get(0));
-				jsonObject.addProperty("movie_title", key.get(1));
-				jsonObject.addProperty("quantity", user.getCart().getItems().get(key));
-				jsonArray.add(jsonObject);
+				
+				String query = 
+						"SELECT id from sales where customerId=" + id + " and movieId=" + "'" + key.get(0) + "' and saleDate=" + "'" + saleDate + "'";
+				ResultSet rs = statement.executeQuery(query);
+				
+				while (rs.next())
+				{
+					jsonObject.addProperty("sale_id", rs.getInt("id"));
+					jsonObject.addProperty("movie_title", key.get(1));
+					jsonObject.addProperty("quantity", user.getCart().getItems().get(key));
+					jsonArray.add(jsonObject);
+				}
 			}
 	
 			out.write(jsonArray.toString());
