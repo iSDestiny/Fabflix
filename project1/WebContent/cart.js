@@ -8,9 +8,10 @@ var update_inputs;
 
 var number = 0;
 function handleShoppingCart(resultData) {
-	createCartCard(resultData);
+	createCartCard(resultData["cart_entries"]);
 	update_buttons = document.querySelectorAll(".update_button");
 	update_inputs = document.querySelectorAll(".quantity");
+	var backbtn = document.querySelector("#backbtn");
 	for(var i = 0; i < update_inputs.length; ++i)
 	{
 		var value = update_inputs[i].value;
@@ -34,6 +35,20 @@ function handleShoppingCart(resultData) {
 			window.location.href = url_new.toString();
 		});
 	}
+
+	var data = resultData["movie_list_url"];
+	backbtn.addEventListener("click", function(){
+		var movieListURL = data;	
+		if(movieListURL === null || movieListURL === "")
+		{
+			var new_url = window.location.protocol + "//" + window.location.host + "/project1/movielist.html" + "?limit=10&sort=ratingdesc&page=1";
+			window.location.href = new_url;
+		}
+		else
+		{
+			window.location.href = movieListURL;
+		}
+	})
 }
 
 function createCartCard(data) {
@@ -41,17 +56,17 @@ function createCartCard(data) {
 	
 	for(var i = 0; i < data.length; ++i)
 	{
-		var rowHTML =  '<div class="col-md-6 col-lg-4 mb-3">';
-		rowHTML += "<div class=\"card bg-light\">";
-		rowHTML += "<div class=\"card-body\">";
+		var rowHTML =  '<div class="col-lg-6 mb-3">';
+		rowHTML += "<div class=\"card bg-dark\">";
+		rowHTML += "<div class=\"card-body text-light\">";
 		rowHTML += "<h5 class=\"card-title\">" + data[i]["movie_title"] + "</h5>";
 		
-		rowHTML += '<div><input type="number" class="quantity" name="' + data[i]["movie_id"] + '"placeholder="Quantity" min="0" step="1"></input></div>';
-		
-		rowHTML += '<button name="' + i + '" class="update_button btn btn-success mt-2"' + '>Update</button>';
-			
-		rowHTML += '<p class="card-text mb-1"><strong>Quantity: </strong>' + 
+		rowHTML += '<input type="number" class="quantity" name="' + data[i]["movie_id"] + '"placeholder="New Quantity" min="0" step="1"></input>';
+
+		rowHTML += '<p class="card-text mb-1"><strong>Current Quantity: </strong>' + 
 			data[i]["quantity"] + "</p>";
+		
+		rowHTML += '<button name="' + i + '" class="update_button btn btn-danger mt-2"' + '>Update</button>';
 		
 		rowHTML += '<div><a href="cart.html?movie_id=' + data[i]["movie_id"] + '&quantity=0&update=false" class="btn btn-danger mt-2"'
 		+ '>Remove</a></div>';

@@ -15,8 +15,19 @@ function createStarDetails(data) {
 		rowHTML += "<div class=\"card-body\">";
 		rowHTML += "<h2 class=\"card-title\">" + data[i]["star_name"] + "</h5>";
 		rowHTML += '<p class="card-text mb-1"><strong>ID</strong>: ' + data[i]["star_id"] + "</p>"; 
+
+		var dob = "";
+		if(data[i]["star_dob"] === null || data[i]["star_dob"] === "")
+		{
+			dob = "Not Available";
+		}
+		else
+		{
+			dob = data[i]["star_dob"];
+		}
+
 		rowHTML += '<p class="card-text mb-1"><strong>Date of Birth</strong>: ' + 
-			data[i]["star_dob"] + "</p>";
+			dob + "</p>";
 
 		rowHTML += '<p class="card-text mb-1"><strong>Starred in</strong>: ';
 		data[i]["stars_in"].forEach(function(star){
@@ -24,8 +35,6 @@ function createStarDetails(data) {
 			rowHTML += ', ';
 		});
 		rowHTML = rowHTML.slice(0, rowHTML.lastIndexOf(",")) + "</p>";
-		
-		rowHTML += '<button type="button" class="btn btn-danger mt-2">Add to cart</button>'
 		
 		rowHTML += "</div></div></div>";
 		movieDetails.append(rowHTML);

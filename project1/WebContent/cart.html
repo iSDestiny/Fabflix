@@ -9,31 +9,66 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
-    	crossorigin="anonymous">
+        crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Shopping Cart</title>
-    <style>
-    	#heading{
-    		background: url(images/space-background.jpg) center center / cover no-repeat;
-    	}
-    </style>
 </head>
-<body>
+<body class="text-light">
 
-<section id="heading" class="jumbotron text-center mb-0 rounded-0 text-light">
-    <h1 class="display-2">FABFLIX</h1>
-    <p class="lead">A simple movie collection website</p>
-</section>
-
-<nav class="navbar bg-dark navbar-dark mb-4">
+<nav id="navbar" class="navbar navbar-expand-lg navbar-dark mb-4">
     <div class="container">
-        <a href="movielist.html" class="navbar-brand"><i class="fas fa-film"></i> Fabflix</a>
+        <a href="index.html" class="navbar-brand text-danger"><i class="fas fa-film"></i> Fabflix</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto text-light">
+            <li class="nav-item">
+                <a class="nav-link" href="browse.html">Browse<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="search.html">Advanced Search</a>
+            </li>
+            </ul>
+            <a href="cart.html" class="nav-item btn btn-danger mr-2 form-inline"><i class="fas fa-shopping-cart"></i>Cart</a>
+            <form action="movielist.html" id="quick_search" class="form-inline my-2 my-lg-0">
+                <div class="input-group my my-lg-0 nav-item">
+                    <input type="search" name="search_query" class="form-control" placeholder="Quick Search" aria-label="Quick Search" aria-describedby="Search">
+                    <div class="input-group-append">
+                        <button id="quick_search_submit" class="btn btn-danger" type="button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </nav>
 
+<section id="cart_header">
+    <div class="container">
+        <h1 class="text-center">
+            Shopping Cart
+        </h1>
+        <hr class="mb-4">
+    </div>
+</section>
+
 <section id="cart">
 	<div class="container">
-		<div id="cart_card_collection" class="row"></div>
+        <div id="cart_card_collection" class="row"></div>
 	</div>
+</section>
+
+<section id="cart_footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 d-flex justify-content-left">
+                <button id="backbtn" class="btn btn-danger ml-md-3 mb-3 mt-2">Continue shopping</button>
+            </div>
+            <div class="col-6 d-flex justify-content-right">
+                <a href="checkout.html" class="btn btn-danger ml-auto mr-md-3 mb-3 mt-2">Proceed to checkout</a>
+            </div>
+        </div>
+    </div>
 </section>
 
 
@@ -44,6 +79,7 @@
     crossorigin="anonymous"></script>
 
 <script src="cart.js"></script>
+<script src="quick_search.js"></script>
 
 </body>
 </html>

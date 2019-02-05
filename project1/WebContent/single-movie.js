@@ -7,7 +7,6 @@ function createMovieDetails(data) {
 	var backbtn = document.querySelector("#backbtn");
 	for(var i = 0; i < data.length; ++i)
 	{
-
 		var rowHTML =  '<div class="col-12">';
 		rowHTML += "<div class=\"card mt-3 bg-dark\">";
 		rowHTML += "<div class=\"card-body\">";
@@ -33,7 +32,8 @@ function createMovieDetails(data) {
 		});
 		rowHTML = rowHTML.slice(0, rowHTML.lastIndexOf(",")) + "</p>";
 		
-		rowHTML += '<button type="button" class="btn btn-danger mt-2">Add to cart</button>'
+		rowHTML += '<a href="cart.html?movie_id=' + data[i]["movie_id"] + '&quantity=1&update=false" class="btn btn-danger mt-2"'
+			+ '>Add to cart</a>';
 		
 		rowHTML += "</div></div></div>";
 		movieDetails.append(rowHTML);

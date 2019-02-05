@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -55,7 +58,8 @@ public class ConfirmationServlet extends HttpServlet {
 			Statement statement = dbc.createStatement();
 			
 			JsonArray jsonArray = new JsonArray();
-	
+			Map<String, SaleInfo> sale_map = new HashMap<String, SaleInfo>();
+			
 			for (ArrayList<String> key: user.getCart().getItems().keySet())
 			{
 				for (int i = 0; i < user.getCart().getItems().get(key); i++)
@@ -63,7 +67,6 @@ public class ConfirmationServlet extends HttpServlet {
 					statement.executeUpdate("insert into sales (customerId, movieId, saleDate)"
 							+ " values ( " + id + ", " + "'" + key.get(0) + "', " + "'" + saleDate + "')");
 				}
-				JsonObject jsonObject = new JsonObject();
 				
 				String query = 
 						"SELECT id from sales where customerId=" + id + " and movieId=" + "'" + key.get(0) + "' and saleDate=" + "'" + saleDate + "'";
@@ -71,11 +74,34 @@ public class ConfirmationServlet extends HttpServlet {
 				
 				while (rs.next())
 				{
-					jsonObject.addProperty("sale_id", rs.getInt("id"));
-					jsonObject.addProperty("movie_title", key.get(1));
-					jsonObject.addProperty("quantity", user.getCart().getItems().get(key));
-					jsonArray.add(jsonObject);
+					String title = key.get(1);
+					int sale_id = rs.getInt("id");
+					
+					if(!sale_map.containsKey(title))
+					{
+						SaleInfo sale = new SaleInfo(title);
+						sale_map.put(title, sale);
+					}
+					else
+					{
+						sale_map.get(title).addId(sale_id);
+					}
 				}
+			}
+			
+			for(String key : sale_map.keySet())
+			{
+				SaleInfo info = sale_map.get(key);
+				JsonObject jsonObject = new JsonObject();
+				JsonArray idsJson = new JsonArray();
+				for(int i = 0; i < info.getQuantity(); ++i)
+				{
+					idsJson.add(info.getIds().get(i));
+				}
+				jsonObject.addProperty("movie_title", key);
+				jsonObject.add("sale_ids", idsJson);
+				jsonObject.addProperty("quantity", info.getQuantity());
+				jsonArray.add(jsonObject);
 			}
 	
 			out.write(jsonArray.toString());

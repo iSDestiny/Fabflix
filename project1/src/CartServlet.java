@@ -83,8 +83,10 @@ public class CartServlet extends HttpServlet {
 				rs.close();
 			}
 			
+			JsonObject parentJson = new JsonObject();
 			JsonArray jsonArray = new JsonArray();
 	
+			parentJson.addProperty("movie_list_url", (String) request.getSession().getAttribute("movielistURL"));
 			for (ArrayList<String> key: user.getCart().getItems().keySet())
 			{
 				JsonObject jsonObject = new JsonObject();
@@ -94,7 +96,8 @@ public class CartServlet extends HttpServlet {
 				jsonArray.add(jsonObject);
 			}
 	
-			out.write(jsonArray.toString());
+			parentJson.add("cart_entries", jsonArray);
+			out.write(parentJson.toString());
 	        statement.close();
 	        dbc.close();
 	    } 

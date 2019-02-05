@@ -1,30 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <meta charset="UTF-8">
-    <title>Checkout</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+		crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<style>
+		#checkout_form{
+			margin-bottom: 20px;
+			background-color: rgb(0, 0, 0, 0.7);
+		}
+	</style>
+	<title>Checkout</title>
 </head>
-
-<body>
-<!-- Flex bootstrap -->
-<style>
-	#checkout_form{
-		margin-bottom: 20px;
-		background-color: rgb(0, 0, 0, 0.7);
-	}
+<body class="text-light">
 	
-	body{
-		background: url(http://kevinbazira.com/images/home_writer_blog_intro4.jpg) center center / cover no-repeat;
-		background-attachment: fixed;
-	}
+<nav id="navbar" class="navbar navbar-expand-lg navbar-dark mb-4">
+  	<div class="container">
+        <a href="index.html" class="navbar-brand text-danger"><i class="fas fa-film"></i> Fabflix</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto text-light">
+            <li class="nav-item">
+                <a class="nav-link" href="browse.html">Browse<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="search.html">Advanced Search</a>
+            </li>
+            </ul>
+            <a href="cart.html" class="nav-item btn btn-danger mr-2 form-inline"><i class="fas fa-shopping-cart"></i>Cart</a>
+            <form action="movielist.html" id="quick_search" class="form-inline my-2 my-lg-0">
+                <div class="input-group my my-lg-0 nav-item">
+                    <input type="search" name="search_query" class="form-control" placeholder="Quick Search" aria-label="Quick Search" aria-describedby="Search">
+                    <div class="input-group-append">
+                        <button id="quick_search_submit" class="btn btn-danger" type="button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
 
-</style>
 <div id = "body" class="container">
-	<div class="p-2 d-flex flex-row justify-content-center flex-container">
+	<div class="p-2">
 		<div>
-			<form id="checkout_form" class="p-5 mt-3 text-white" method="post" action="#">
-				<h3> Checkout </h3>
+			<form id="checkout_form" class="p-5 mx-sm-3 mx-md-5 mt-3 text-white" method="post" action="#">
+				<h3 class="text-danger">Payment Form</h3>
 			  <div class="form-group">
 			    <label for="exampleInputFirstName1">First Name</label>
 			    <input type="text" class="form-control" name = "firstName" placeholder="First Name">
@@ -41,9 +65,9 @@
 			    <label for="exampleInputExpirationDate1">Expiration Date</label>
 			    <input type="date" class="form-control" name="expiration" placeholder="Date">
 			  </div>
-			  <button type="submit" class="btn btn-success btn-block">Continue</button>
+			  <button type="submit" class="btn btn-danger btn-block">Confirm</button>
 			  <div id="checkout_error_message" class = p-2></div>
-			  <div class="text-center"><a href="cart.html">Go back</a></div>
+			  <div class="text-center"><a href="cart.html" class="text-danger">Go back</a></div>
 			</form>
 		</div>
 	</div>
@@ -55,6 +79,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script src="quick_search.js"></script>
 
 </body>
 
