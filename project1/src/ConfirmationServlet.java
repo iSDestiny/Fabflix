@@ -82,10 +82,8 @@ public class ConfirmationServlet extends HttpServlet {
 						SaleInfo sale = new SaleInfo(title);
 						sale_map.put(title, sale);
 					}
-					else
-					{
-						sale_map.get(title).addId(sale_id);
-					}
+					sale_map.get(title).addId(sale_id);
+				
 				}
 			}
 			
