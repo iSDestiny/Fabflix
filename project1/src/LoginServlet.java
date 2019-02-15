@@ -26,10 +26,21 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        
+		
+        String gRecaptchaResponse = request.getParameter("captcha");
+		System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+
+		JsonObject responseJsonObject = new JsonObject();
+		
+        try {
+			RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+			responseJsonObject.addProperty("recaptcha", "success");
+        } catch (Exception e) {
+			responseJsonObject.addProperty("recaptcha", "failure");
+        }
+
         try
         {
-        	
 	        Connection dbcon = dataSource.getConnection();
 	
 			String query = "SELECT id,email,password from customers where email = ?";
@@ -37,7 +48,6 @@ public class LoginServlet extends HttpServlet {
 			statement.setString(1, username);
 			
 			ResultSet rs = statement.executeQuery();
-			JsonObject responseJsonObject = new JsonObject();
 			
 			if (rs.next()) {
 				if (password.equals(rs.getString("password"))) {
@@ -49,16 +59,20 @@ public class LoginServlet extends HttpServlet {
 					Long lastAccessTime = ((HttpServletRequest) request).getSession().getLastAccessedTime();
 					request.getSession().setAttribute("user", new User(rs.getInt("id"), username, cart));
 					responseJsonObject.addProperty("status", "success");
+					responseJsonObject.addProperty("sessionId", sessionId);
+					responseJsonObject.addProperty("lastAccessTime", lastAccessTime);
 					responseJsonObject.addProperty("message", "success");
 				}
 				else 
 				{
 					responseJsonObject.addProperty("message", "Incorrect password");
+					responseJsonObject.addProperty("status", "failure");
 				}
 			}
 			else
 			{
 				responseJsonObject.addProperty("message", "Email " + username + " doesn't exist");
+				responseJsonObject.addProperty("status", "failure");
 			}
 
 			response.getWriter().write(responseJsonObject.toString());
