@@ -3,7 +3,7 @@
  * @param resultDataString jsonObject
  */
 function handleLoginResult(resultDataString) {
-    let resultDataJson = resultDataString;
+	let resultDataJson = resultDataString;
 
 	console.log('handle login response');
 	console.log(resultDataJson);
@@ -52,16 +52,11 @@ function submitLoginForm(formSubmitEvent) {
 
 	let username = document.querySelector('#username').value;
 	let password = document.querySelector('#password').value;
-    let captcha = grecaptcha.getResponse();
-    let data = { username: username, password: password, captcha: captcha };
-    console.log("Captcha: " + captcha);
-    console.log("DATA IS: username: " + data.username + ", password: " + data.password + ", captcha: " + data.captcha);
-	$.post(
-        'api/login',
-        data,
-        (resultDataString) => handleLoginResult(resultDataString),
-        "json"
-	);
+	let captcha = grecaptcha.getResponse();
+	let data = { username: username, password: password, captcha: captcha };
+	console.log('Captcha: ' + captcha);
+	console.log('DATA IS: username: ' + data.username + ', password: ' + data.password + ', captcha: ' + data.captcha);
+	$.post('api/login', data, (resultDataString) => handleLoginResult(resultDataString), 'json');
 }
 
 // Bind the submit action of the form to a handler function
