@@ -48,7 +48,6 @@ public class CartServlet extends HttpServlet {
 		try
 		{
 			Connection dbc = dataSource.getConnection();
-			Statement statement = dbc.createStatement();
 	
 			if (request.getParameter("quantity") != null)
 			{
@@ -98,7 +97,6 @@ public class CartServlet extends HttpServlet {
 	
 			parentJson.add("cart_entries", jsonArray);
 			out.write(parentJson.toString());
-	        statement.close();
 	        dbc.close();
 	    } 
 		catch(Exception e) 

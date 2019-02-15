@@ -55,7 +55,6 @@ public class ConfirmationServlet extends HttpServlet {
 		try
 		{
 			Connection dbc = dataSource.getConnection();
-			Statement statement = dbc.createStatement();
 			
 			JsonArray jsonArray = new JsonArray();
 			Map<String, SaleInfo> sale_map = new HashMap<String, SaleInfo>();
@@ -64,13 +63,22 @@ public class ConfirmationServlet extends HttpServlet {
 			{
 				for (int i = 0; i < user.getCart().getItems().get(key); i++)
 				{
-					statement.executeUpdate("insert into sales (customerId, movieId, saleDate)"
-							+ " values ( " + id + ", " + "'" + key.get(0) + "', " + "'" + saleDate + "')");
+					String sql = "insert into sales (customerId, movieId, saleDate) values(?, ?, ?)";
+					PreparedStatement statement = dbc.prepareStatement(sql);
+					statement.setInt(1,id);
+					statement.setString(2,key.get(0));
+					statement.setDate(3,saleDate);
+					statement.executeUpdate();
 				}
 				
 				String query = 
-						"SELECT id from sales where customerId=" + id + " and movieId=" + "'" + key.get(0) + "' and saleDate=" + "'" + saleDate + "'";
-				ResultSet rs = statement.executeQuery(query);
+						"SELECT id from sales where customerId=? and movieId=? and saleDate=?";
+				PreparedStatement statement2 = dbc.prepareStatement(query);
+				statement2.setInt(1, id);
+				statement2.setString(2, key.get(0));
+				statement2.setDate(3, saleDate);
+				
+				ResultSet rs = statement2.executeQuery();
 				
 				while (rs.next())
 				{
@@ -103,7 +111,6 @@ public class ConfirmationServlet extends HttpServlet {
 			}
 	
 			out.write(jsonArray.toString());
-	        statement.close();
 	        dbc.close();
 	    } 
 		catch(Exception e) 
