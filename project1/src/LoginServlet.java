@@ -48,9 +48,9 @@ public class LoginServlet extends HttpServlet {
 			statement.setString(1, username);
 			
 			ResultSet rs = statement.executeQuery();
-			
+			// verifyCredentials("a@email.com", "a2")
 			if (rs.next()) {
-				if (password.equals(rs.getString("password"))) {
+				if (VerifyPassword.verifyCredentials(username, password)) {
 					// Login succeeds
 					// Set this user into current session
 					request.getSession().invalidate();
