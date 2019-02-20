@@ -27,9 +27,8 @@ function handleLoginResult(resultDataString) {
 
 	// If login succeeds, it will redirect the user to index.html
 	if (resultDataJson['status'] === 'success' && recaptchaStatus) {
-		if(resultDataJson['type'] == 'employee') {
-			alert("Employee")
-			window.location.replace('_dashboard.html/dashboard_home.html');
+		if (resultDataJson['type'] == 'employee') {
+			window.location.replace('_dashboard/dashboard_home.html');
 		} else {
 			window.location.replace('index.html');
 		}

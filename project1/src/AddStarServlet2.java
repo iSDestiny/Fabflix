@@ -14,14 +14,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
 
 
 
 /**
  * Servlet implementation class BrowseServlet
  */
-@WebServlet(name = "AddMovie", urlPatterns = "/api/addmovie")
-public class AddMovieServlet extends HttpServlet {
+@WebServlet(name = "AddStar", urlPatterns = "/api/addstar")
+public class AddStarServlet2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Resource(name = "jdbc/moviedb")
@@ -33,10 +34,6 @@ public class AddMovieServlet extends HttpServlet {
 		response.setContentType("application/json");
 		String dob = request.getParameter("dob");
 		String name = request.getParameter("star_name");
-		String title = request.getParameter("title");
-		String year = request.getParameter("year");
-		String director = request.getParameter("director");
-		String genre = request.getParameter("genre");
 		
 		PrintWriter out = response.getWriter();
 		
@@ -44,52 +41,34 @@ public class AddMovieServlet extends HttpServlet {
 		{
 			Connection dbcon = dataSource.getConnection();
 
-
-			String query = "{CALL add_movie(?, ?, ?, ?, ?, ?, ?, ?)}";
+			String query = "INSERT INTO stars (id, name, birthYear) VALUES (?, ?, ?)";
 
 			PreparedStatement statement = dbcon.prepareStatement(query);
 			// id = nm9423080 (current max)
-			String starIdQuery = "select max(id) from stars";
-			PreparedStatement starIdStatement = dbcon.prepareStatement(starIdQuery);
-			ResultSet starIdResult = starIdStatement.executeQuery();
+			String idQuery = "select max(id) from stars";
+			PreparedStatement idStatement = dbcon.prepareStatement(idQuery);
+			ResultSet idResult = idStatement.executeQuery();
 			
-			String star_id = "";
-			if(starIdResult.next())
+			String id = "";
+			if(idResult.next())
 			{
-				String currentMaxId = starIdResult.getString(1);
+				String currentMaxId = idResult.getString(1);
 				int parsedMax = Integer.parseInt(currentMaxId.substring(2));
 				int new_id = parsedMax + 1;
-				star_id = "nm" + Integer.toString(new_id);
+				id = "nm" + Integer.toString(new_id);
 			}
 			
-			String movieIdQuery = "select max(id) from movies";
-			PreparedStatement movieIdStatement = dbcon.prepareStatement(movieIdQuery);
-			ResultSet movieIdResult = movieIdStatement.executeQuery();
+			System.out.println("id: " + id + ", dob: " + dob);
 			
-			String movie_id = "";
-			if(movieIdResult.next())
-			{
-				String currentMaxId = movieIdResult.getString(1);
-				int parsedMax = Integer.parseInt(currentMaxId.substring(2));
-				int new_id = parsedMax + 1;
-				movie_id = "tt" + Integer.toString(new_id);
-			}
-			
-			//System.out.println("id: " + id + ", dob: " + dob);
-			statement.setString(1, movie_id);
-			statement.setString(2, title);
-			statement.setInt(3, Integer.parseInt(year));
-			statement.setString(4, director);
-			statement.setString(5, genre);
-			statement.setString(6, star_id);
-			statement.setString(7, name);
+			statement.setString(1, id);
+			statement.setString(2, name);
 			
 			if(dob == "")
 			{
-				statement.setNull(8, Types.INTEGER);
+				statement.setNull(3, Types.INTEGER);
 			}
 			else {
-				statement.setInt(8, Integer.parseInt(dob));
+				statement.setInt(3, Integer.parseInt(dob));
 			}
 			
 			statement.executeUpdate();
@@ -97,22 +76,22 @@ public class AddMovieServlet extends HttpServlet {
 			JsonObject jsonObject = new JsonObject();
 			
 			jsonObject.addProperty("success", "true");
-			jsonObject.addProperty("message", "Successfully added " + title + " into database");
+			jsonObject.addProperty("message", "Successfully added " + name + " into star table");
+
 			
             // write JSON string to output
             out.write(jsonObject.toString());
             // set response status to 200 (OK)
             response.setStatus(200);
             
-            starIdResult.close();
-            movieIdResult.close();
+            idResult.close();
             statement.close();
             dbcon.close();
 			
 		} catch(Exception e) {
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.addProperty("success", "false");
-			jsonObject.addProperty("message", "Failed to add " + title + " into database. Error Message: " + e.getMessage());
+			jsonObject.addProperty("message", "Failed to add " + name + " into star table. Error Message: " + e.getMessage());
 			out.write(jsonObject.toString());
 		}
 	}
