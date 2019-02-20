@@ -47,7 +47,10 @@ public class ConfirmationServlet extends HttpServlet {
 		response.setContentType("application/json");
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
-		int id = user.getId();
+		Employee employee = (Employee) session.getAttribute("employee");
+		int id = user != null ? user.getId() : null;
+		String username = employee != null ? employee.getUsername() : null;
+		
 		PrintWriter out = response.getWriter();
 		Long lastAccessTime = session.getLastAccessedTime();
 		Date saleDate = new Date(lastAccessTime);
@@ -59,41 +62,84 @@ public class ConfirmationServlet extends HttpServlet {
 			JsonArray jsonArray = new JsonArray();
 			Map<String, SaleInfo> sale_map = new HashMap<String, SaleInfo>();
 			
-			for (ArrayList<String> key: user.getCart().getItems().keySet())
+			if(user != null)
 			{
-				for (int i = 0; i < user.getCart().getItems().get(key); i++)
+				for (ArrayList<String> key: user.getCart().getItems().keySet())
 				{
-					String sql = "insert into sales (customerId, movieId, saleDate) values(?, ?, ?)";
-					PreparedStatement statement = dbc.prepareStatement(sql);
-					statement.setInt(1,id);
-					statement.setString(2,key.get(0));
-					statement.setDate(3,saleDate);
-					statement.executeUpdate();
-				}
-				
-				String query = 
-						"SELECT id from sales where customerId=? and movieId=? and saleDate=?";
-				PreparedStatement statement2 = dbc.prepareStatement(query);
-				statement2.setInt(1, id);
-				statement2.setString(2, key.get(0));
-				statement2.setDate(3, saleDate);
-				
-				ResultSet rs = statement2.executeQuery();
-				
-				while (rs.next())
-				{
-					String title = key.get(1);
-					int sale_id = rs.getInt("id");
-					
-					if(!sale_map.containsKey(title))
+					for (int i = 0; i < user.getCart().getItems().get(key); i++)
 					{
-						SaleInfo sale = new SaleInfo(title);
-						sale_map.put(title, sale);
+						String sql = "insert into sales (customerId, movieId, saleDate) values(?, ?, ?)";
+						PreparedStatement statement = dbc.prepareStatement(sql);
+						statement.setInt(1,id);
+						statement.setString(2,key.get(0));
+						statement.setDate(3,saleDate);
+						statement.executeUpdate();
 					}
-					sale_map.get(title).addId(sale_id);
-				
+					
+					String query = 
+							"SELECT id from sales where customerId=? and movieId=? and saleDate=?";
+					PreparedStatement statement2 = dbc.prepareStatement(query);
+					statement2.setInt(1, id);
+					statement2.setString(2, key.get(0));
+					statement2.setDate(3, saleDate);
+					
+					ResultSet rs = statement2.executeQuery();
+					
+					while (rs.next())
+					{
+						String title = key.get(1);
+						int sale_id = rs.getInt("id");
+						
+						if(!sale_map.containsKey(title))
+						{
+							SaleInfo sale = new SaleInfo(title);
+							sale_map.put(title, sale);
+						}
+						sale_map.get(title).addId(sale_id);
+					
+					}
 				}
 			}
+			else 
+			{
+				for (ArrayList<String> key: employee.getCart().getItems().keySet())
+				{
+					for (int i = 0; i < employee.getCart().getItems().get(key); i++)
+					{
+						String sql = "insert into sales (customerId, movieId, saleDate) values(?, ?, ?)";
+						PreparedStatement statement = dbc.prepareStatement(sql);
+						statement.setInt(1,id);
+						statement.setString(2,key.get(0));
+						statement.setDate(3,saleDate);
+						statement.executeUpdate();
+					}
+					
+					String query = 
+							"SELECT id from sales where customerId=? and movieId=? and saleDate=?";
+					PreparedStatement statement2 = dbc.prepareStatement(query);
+					statement2.setInt(1, id);
+					statement2.setString(2, key.get(0));
+					statement2.setDate(3, saleDate);
+					
+					ResultSet rs = statement2.executeQuery();
+					
+					while (rs.next())
+					{
+						String title = key.get(1);
+						int sale_id = rs.getInt("id");
+						
+						if(!sale_map.containsKey(title))
+						{
+							SaleInfo sale = new SaleInfo(title);
+							sale_map.put(title, sale);
+						}
+						sale_map.get(title).addId(sale_id);
+					
+					}
+				}
+			}
+			
+			
 			
 			for(String key : sale_map.keySet())
 			{
