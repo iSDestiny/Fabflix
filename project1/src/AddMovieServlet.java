@@ -92,12 +92,23 @@ public class AddMovieServlet extends HttpServlet {
 				statement.setInt(8, Integer.parseInt(dob));
 			}
 			
-			statement.executeUpdate();
-			
 			JsonObject jsonObject = new JsonObject();
 			
-			jsonObject.addProperty("success", "true");
-			jsonObject.addProperty("message", "Successfully added " + title + " into database");
+			ResultSet rs = statement.executeQuery();
+			if(rs.next())
+			{
+				String success = String.valueOf(rs.getBoolean("success"));
+				if(success.equals("true"))
+				{
+					jsonObject.addProperty("success", "true");
+					jsonObject.addProperty("message", "Successfully added " + title + " into database");
+				}
+				else
+				{
+					jsonObject.addProperty("success", "false");
+					jsonObject.addProperty("message", "Failed to add " + title + " into database, it already exists");
+				}
+			}
 			
             // write JSON string to output
             out.write(jsonObject.toString());

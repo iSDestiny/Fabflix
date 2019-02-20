@@ -13,17 +13,17 @@ CREATE PROCEDURE add_movie(
 	IN s_dob INTEGER
 )
 BEGIN
+	SET @success = false;
     SET @movieExists = true;
     SET @starExists = true;
     SET @genreExists = true;
-    SET @starLinked = false;
-    SET @movieLinked = false;
     
 	IF ( SELECT NOT EXISTS (SELECT * FROM movies m WHERE m.title = m_title 
 		AND m.year = m_year AND m.director = m_director) )  
 	THEN
 		INSERT INTO movies (id, title, year, director) VALUES (m_id, m_title, m_year, m_director);
         SET @movieExists = false;
+        SET @success = true;
 	END IF;
     
     IF (NOT @movieExists) THEN
@@ -51,6 +51,7 @@ BEGIN
         INSERT INTO ratings (movieId, rating, numVotes) VALUES (m_id, 0, 0);
 	END IF;
 	
+    SELECT @success AS success, @starExists AS starExists, @genreExists as genreExists;
 END $$
 DELIMITER ;
 
