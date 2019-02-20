@@ -27,6 +27,16 @@ function handleMovieListResult(resultData) {
 		);
 	}
 	current_page_element.textContent = current_page.toString();
+
+	var posters = document.querySelectorAll('.poster');
+	posters.forEach(function(pData) {
+		$.getJSON('https://omdbapi.com/?i=' + pData.id + '&apikey=thewdb', function(aData) {
+			if (aData['Response'] === 'True') {
+				console.log(aData['Poster']);
+				document.getElementById(pData.id).src = aData['Poster'];
+			}
+		});
+	});
 }
 
 function createMovieCard(data) {
@@ -34,8 +44,12 @@ function createMovieCard(data) {
 
 	for (var i = 0; i < data.length; ++i) {
 		var rowHTML = '<div class="col mb-3 d-flex align-items-stretch">';
-		rowHTML += '<div class="card h-100 bg-dark">';
-		rowHTML += '<div class="card-body">';
+		rowHTML += '<div class="card h-100 bg-dark"><div class="row card-body">';
+		rowHTML +=
+			'<div class="col-auto"><img id="' +
+			data[i]['movie_id'] +
+			'" class="img-fluid poster" alt="movie poster"></div>';
+		rowHTML += '<div class="col mt-4 card-block px-2">';
 		rowHTML +=
 			'<h5 class="card-title">' +
 			'<strong><a href="single-movie.html?id=' +
@@ -74,7 +88,7 @@ function createMovieCard(data) {
 			'&quantity=1&update=false" class="btn btn-danger mt-2"' +
 			'>Add to cart</a>';
 
-		rowHTML += '</div></div></div><div class="w-100"></div>';
+		rowHTML += '</div></div></div></div><div class="w-100"></div>';
 		movieCardCollection.append(rowHTML);
 	}
 }

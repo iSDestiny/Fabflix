@@ -43,6 +43,7 @@ public class CartServlet extends HttpServlet {
 		response.setContentType("application/json");
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
+		Employee employee = (Employee) session.getAttribute("employee");
 		PrintWriter out = response.getWriter();
 		
 		try
@@ -65,18 +66,37 @@ public class CartServlet extends HttpServlet {
 				
 				while (rs.next())
 				{
-					if (Integer.parseInt(qt) == 0)
+					if(user != null) 
 					{
-						user.getCart().delete(id, rs.getString("title"));
+						if (Integer.parseInt(qt) == 0)
+						{
+							user.getCart().delete(id, rs.getString("title"));
+						}
+						else
+						{
+							if (update.equals("true"))
+							{
+								user.getCart().update(id, rs.getString("title"), qt);
+							}
+							else
+								user.getCart().add(id, rs.getString("title"), qt);
+						}
 					}
 					else
 					{
-						if (update.equals("true"))
+						if (Integer.parseInt(qt) == 0)
 						{
-							user.getCart().update(id, rs.getString("title"), qt);
+							employee.getCart().delete(id, rs.getString("title"));
 						}
 						else
-							user.getCart().add(id, rs.getString("title"), qt);
+						{
+							if (update.equals("true"))
+							{
+								employee.getCart().update(id, rs.getString("title"), qt);
+							}
+							else
+								employee.getCart().add(id, rs.getString("title"), qt);
+						}
 					}
 				}
 				rs.close();
@@ -86,15 +106,29 @@ public class CartServlet extends HttpServlet {
 			JsonArray jsonArray = new JsonArray();
 	
 			parentJson.addProperty("movie_list_url", (String) request.getSession().getAttribute("movielistURL"));
-			for (ArrayList<String> key: user.getCart().getItems().keySet())
+			if(user != null)
 			{
-				JsonObject jsonObject = new JsonObject();
-				jsonObject.addProperty("movie_id", key.get(0));
-				jsonObject.addProperty("movie_title", key.get(1));
-				jsonObject.addProperty("quantity", user.getCart().getItems().get(key));
-				jsonArray.add(jsonObject);
+				for (ArrayList<String> key: user.getCart().getItems().keySet())
+				{
+					JsonObject jsonObject = new JsonObject();
+					jsonObject.addProperty("movie_id", key.get(0));
+					jsonObject.addProperty("movie_title", key.get(1));
+					jsonObject.addProperty("quantity", user.getCart().getItems().get(key));
+					jsonArray.add(jsonObject);
+				}
 			}
-	
+			else
+			{
+				for (ArrayList<String> key: employee.getCart().getItems().keySet())
+				{
+					JsonObject jsonObject = new JsonObject();
+					jsonObject.addProperty("movie_id", key.get(0));
+					jsonObject.addProperty("movie_title", key.get(1));
+					jsonObject.addProperty("quantity", employee.getCart().getItems().get(key));
+					jsonArray.add(jsonObject);
+				}
+			}
+			
 			parentJson.add("cart_entries", jsonArray);
 			out.write(parentJson.toString());
 	        dbc.close();

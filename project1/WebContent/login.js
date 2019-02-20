@@ -27,7 +27,11 @@ function handleLoginResult(resultDataString) {
 
 	// If login succeeds, it will redirect the user to index.html
 	if (resultDataJson['status'] === 'success' && recaptchaStatus) {
-		window.location.replace('index.html');
+		if (resultDataJson['type'] == 'employee') {
+			window.location.replace('_dashboard/dashboard_home.html');
+		} else {
+			window.location.replace('index.html');
+		}
 	} else if (resultDataJson['status'] !== 'success') {
 		// If login fails, the web page will display
 		// error messages on <div> with id "login_error_message"

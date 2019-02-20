@@ -47,10 +47,15 @@ public class LoginServlet extends HttpServlet {
 			PreparedStatement statement = dbcon.prepareStatement(query);
 			statement.setString(1, username);
 			
-			ResultSet rs = statement.executeQuery();
+			String queryEmployee = "SELECT email, password from employees where email = ?";
+			PreparedStatement statementEmployee = dbcon.prepareStatement(queryEmployee);
+			statementEmployee.setString(1, username);
 			
+			ResultSet rs = statement.executeQuery();
+			ResultSet rsEmployee = statementEmployee.executeQuery();
+			// verifyCredentials("a@email.com", "a2")
 			if (rs.next()) {
-				if (password.equals(rs.getString("password"))) {
+				if (VerifyPassword.verifyCredentials(username, password)) {
 					// Login succeeds
 					// Set this user into current session
 					request.getSession().invalidate();
@@ -62,8 +67,30 @@ public class LoginServlet extends HttpServlet {
 					responseJsonObject.addProperty("sessionId", sessionId);
 					responseJsonObject.addProperty("lastAccessTime", lastAccessTime);
 					responseJsonObject.addProperty("message", "success");
+					responseJsonObject.addProperty("type", "user");
 				}
 				else 
+				{
+					responseJsonObject.addProperty("message", "Incorrect password");
+					responseJsonObject.addProperty("status", "failure");
+				}
+			}
+			else if(rsEmployee.next())
+			{
+				if(VerifyEmployeePassword.verifyCredentials(username, password))
+				{
+					request.getSession().invalidate();
+					Cart cart = new Cart();
+					String sessionId = ((HttpServletRequest) request).getSession().getId();
+					Long lastAccessTime = ((HttpServletRequest) request).getSession().getLastAccessedTime();
+					request.getSession().setAttribute("employee", new Employee(username, cart));
+					responseJsonObject.addProperty("status", "success");
+					responseJsonObject.addProperty("sessionId", sessionId);
+					responseJsonObject.addProperty("lastAccessTime", lastAccessTime);
+					responseJsonObject.addProperty("message", "success");
+					responseJsonObject.addProperty("type", "employee");
+				}
+				else
 				{
 					responseJsonObject.addProperty("message", "Incorrect password");
 					responseJsonObject.addProperty("status", "failure");
