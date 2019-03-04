@@ -162,15 +162,45 @@ public class MovieListServlet extends HttpServlet
 		{
 			if(params.containsKey("title"))
 			{
+				String index_query = "show index from movies";
+				PreparedStatement index = dbc.prepareStatement(index_query);
+				ResultSet ind = index.executeQuery();
+				
+				ind.next();
+				if (ind.next() == false) {
+					System.out.println("Go in here");
+					String ft = "ALTER TABLE movies ADD FULLTEXT(title)";
+					PreparedStatement full = dbc.prepareStatement(ft);
+					full.executeUpdate();
+				}
+				
 				query = "SELECT m.id, title, year, director, rating\r\n" + 
 						"FROM movies m, ratings r\r\n" +
-						"WHERE m.id = r.movieId AND m.title LIKE ?\r\n" + 
+						"WHERE m.id = r.movieId AND MATCH(m.title) AGAINST(? in BOOLEAN MODE)\r\n" + 
 						"ORDER BY SORT1 SORT2\r\n" + 
 						"LIMIT LIMITP\r\n" +
 						"OFFSET OFFSETP";
 				query = processQuery(query, params);
 				statement = dbc.prepareStatement(query);
-				statement.setString(1, "%"+params.get("title")[0]+"%");
+				
+				String[] splited = params.get("title")[0].split("\\s+");
+				if (splited.length == 1) 
+					{
+						if (splited[0].length() < 3) {statement.setString(1, splited[0] + "*");}
+						else {
+						statement.setString(1, params.get("title")[0]);
+						}
+					}
+				else 
+				{
+					String searchable = "+" + splited[0] + "*";
+					for (int i = 1; i < splited.length; i++)
+					{
+						searchable += "+" + splited[i] + "*";
+					}
+					statement.setString(1, searchable);
+				}
+				System.out.println(params.get("title")[0]);
 			}
 			else if(params.containsKey("letter"))
 			{
