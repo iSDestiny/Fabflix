@@ -1,0 +1,4 @@
+For the xml parsing we used two methods:
+1) One of the ways we optimized the xml parsing was to only do queries either outside of loops or use queries that didn't spend too much
+time such as finding the top most element. We used the top most element for the unique id's of movies and stars because that was the 
+most efficient way to do it.
