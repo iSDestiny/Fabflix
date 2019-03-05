@@ -1,4 +1,9 @@
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -61,51 +66,61 @@ public class CastParser {
         Element docEle = dom.getDocumentElement();
         NodeList nl = docEle.getElementsByTagName("dirfilms");
         
+        try {
+			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/moviedb", "Jason", "Jimmy123$");
+			
+			 if (nl != null && nl.getLength() > 0) {
+		            for (int i = 0; i < nl.getLength(); i++) {
+		            	Movie newfilm = new Movie();
+		                Node movie = (Node) nl.item(i);
+		                NodeList dir = movie.getChildNodes();
+		                for (int j = 0; j < dir.getLength(); j++)
+		                {
+		                	Node child = (Node) dir.item(j);
+		                	if (child.getNodeName() == "is")
+		                	{
+		                		newfilm.setDirector(child.getTextContent());
+		                	}
+		                	else if(child.getNodeName() == "filmc")
+		                	{
+		                		NodeList films = dir.item(j).getChildNodes();
+		                		for (int k = 0; k < films.getLength(); k++)
+		                		{
+		                			Node film = (Node) films.item(k);
+		                			NodeList filmattr = film.getChildNodes();
+		                			for (int l = 0; l < filmattr.getLength(); l++)
+		                			{
+		                				Node attributes = (Node) filmattr.item(l);
+		                				if (attributes.getNodeName() == "f")
+		                				{
+		                					newfilm.setId(attributes.getTextContent());
+		                				}
+		                				else if(attributes.getNodeName() == "t")
+		                				{
+		                					newfilm.setTitle(attributes.getTextContent());
+		                				}
+		                				else if(attributes.getNodeName() == "a")
+		                				{
+		                					Star star = new Star();
+		                					star.setName(attributes.getTextContent());
+		                					newfilm.addStar(star);
+		                				}
+		                			}
+		                		}
+		                	}
+		                }
+		                
+		                myMovies.add(newfilm);
+		            }
+		        }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
        // System.out.println(nl.getLength());
         
-        if (nl != null && nl.getLength() > 0) {
-            for (int i = 0; i < nl.getLength(); i++) {
-            	Movie newfilm = new Movie();
-                Node movie = (Node) nl.item(i);
-                NodeList dir = movie.getChildNodes();
-                for (int j = 0; j < dir.getLength(); j++)
-                {
-                	Node child = (Node) dir.item(j);
-                	if (child.getNodeName() == "is")
-                	{
-                		newfilm.setDirector(child.getTextContent());
-                	}
-                	else if(child.getNodeName() == "filmc")
-                	{
-                		NodeList films = dir.item(j).getChildNodes();
-                		for (int k = 0; k < films.getLength(); k++)
-                		{
-                			Node film = (Node) films.item(k);
-                			NodeList filmattr = film.getChildNodes();
-                			for (int l = 0; l < filmattr.getLength(); l++)
-                			{
-                				Node attributes = (Node) filmattr.item(l);
-                				if (attributes.getNodeName() == "f")
-                				{
-                					newfilm.setId(attributes.getTextContent());
-                				}
-                				else if(attributes.getNodeName() == "t")
-                				{
-                					newfilm.setTitle(attributes.getTextContent());
-                				}
-                				else if(attributes.getNodeName() == "a")
-                				{
-                					Star star = new Star();
-                					star.setName(attributes.getTextContent());
-                					newfilm.addStar(star);
-                				}
-                			}
-                		}
-                	}
-                }
-                myMovies.add(newfilm);
-            }
-        }
+       
     }
 
 

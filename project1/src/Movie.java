@@ -60,6 +60,11 @@ public class Movie {
 		starlist.add(star);
 	}
 	
+	ArrayList<Star> getStar()
+	{
+		return starlist;
+	}
+	
 	ArrayList<Genre> getGenre()
 	{
 		return genrelist;
