@@ -42,6 +42,18 @@ public class AutoCompleteServlet extends HttpServlet {
 			}	
 			
 			// TODO: in project 4, you should do full text search with MySQL to find the matches on movies
+			String index_query = "show index from movies";
+			PreparedStatement index = dbcon.prepareStatement(index_query);
+			ResultSet ind = index.executeQuery();
+			
+			ind.next();
+			if (ind.next() == false) {
+				System.out.println("Go in here");
+				String ft = "ALTER TABLE movies ADD FULLTEXT(title)";
+				PreparedStatement full = dbcon.prepareStatement(ft);
+				full.executeUpdate();
+			}
+			
 			String query1 = "SELECT m.id, title\r\n" + 
 					"FROM movies m\r\n" +
 					"WHERE MATCH(m.title) AGAINST(? in BOOLEAN MODE) LIMIT 10\r\n";
