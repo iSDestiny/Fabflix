@@ -56,7 +56,8 @@ public class LoginFilter implements Filter {
         requestURI = requestURI.toLowerCase();
 
         return requestURI.endsWith("login.html") || requestURI.endsWith("login.js")
-                || requestURI.endsWith("api/login");
+                || requestURI.endsWith("api/login") || requestURI.contains("api");
+
     }
 
     /**

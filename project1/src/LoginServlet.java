@@ -7,10 +7,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Enumeration;
+import java.util.Map;
 
 /**
  * This class is declared as LoginServlet in web annotation, 
@@ -24,21 +29,46 @@ public class LoginServlet extends HttpServlet {
 	private DataSource dataSource;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-		
-        String gRecaptchaResponse = request.getParameter("captcha");
-		System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+    	
 
+    	
+    	String username = request.getParameter("username");
+        String password = request.getParameter("password");
+		String android = request.getParameter("android");
+		String gRecaptchaResponse = request.getParameter("captcha");
+    	
+		if(username == null)
+		{
+	    	StringBuilder buffer = new StringBuilder();
+	    	BufferedReader reader = request.getReader();
+	    	String line;
+	    	while ((line = reader.readLine()) != null) {
+	    	    buffer.append(line);
+	    	}
+	    	String data = buffer.toString();
+	    	System.out.println("bufferdata" + data);
+	    	JSONObject jObj = new JSONObject(data);
+	    	username = jObj.getString("username");
+	    	password = jObj.getString("password");
+	    	android = jObj.getString("android");
+		}
+        
+		System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+		
 		JsonObject responseJsonObject = new JsonObject();
 		
-        try {
-			RecaptchaVerifyUtils.verify(gRecaptchaResponse);
-			responseJsonObject.addProperty("recaptcha", "success");
-        } catch (Exception e) {
-			responseJsonObject.addProperty("recaptcha", "failure");
-        }
-
+		if(android != null && !android.equals("true")) {
+	        try {
+				RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+				responseJsonObject.addProperty("recaptcha", "success");
+	        } catch (Exception e) {
+				responseJsonObject.addProperty("recaptcha", "failure");
+	        }
+		}else
+		{
+			System.out.println("IN ANDROID FRONTEND");
+		}
+	
         try
         {
 	        Connection dbcon = dataSource.getConnection();
@@ -112,6 +142,7 @@ public class LoginServlet extends HttpServlet {
         catch (Exception e) 
 		{
 			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("status", "failure");
 			jsonObject.addProperty("errorMessage", e.getMessage());
 			response.getWriter().write(jsonObject.toString());
 
