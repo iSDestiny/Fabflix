@@ -46,7 +46,10 @@ function handleShoppingCart(resultData) {
 				'?limit=10&sort=ratingdesc&page=1';
 			window.location.href = new_url;
 		} else {
-			window.location.href = movieListURL;
+			var url_new = new URL(window.location.toString());
+			url_new.search = movieListURL.substring(movieListURL.indexOf("?"));
+			url_new.pathname = "project1/" + movieListURL.substring(0, movieListURL.indexOf("?"));
+			window.location.href = url_new.toString();
 		}
 	});
 }

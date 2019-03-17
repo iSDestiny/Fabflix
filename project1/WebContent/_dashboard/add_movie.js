@@ -6,6 +6,7 @@ $('#add_movie_form').submit(function(event) {
 });
 
 function add_movie_function() {
+	var search_url = new URL(window.location.toString());
 	search_url.search = '?';
 	var title = inputs[0].value;
 	var year = inputs[1].value;

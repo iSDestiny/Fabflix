@@ -6,6 +6,7 @@ $('#add_star_form').submit(function(event) {
 });
 
 function add_star_function() {
+	var search_url = new URL(window.location.toString());
 	search_url.search = '?';
 	var star_name = inputs[0].value;
 	var dob = inputs[1].value;

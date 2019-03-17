@@ -3,6 +3,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 public class VerifyEmployeePassword {
@@ -26,12 +30,23 @@ public class VerifyEmployeePassword {
 
 	public static boolean verifyCredentials(String email, String password) throws Exception {
 		
-        String loginUser = "Jason";
-        String loginPasswd = "Jimmy123$";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+//        String loginUser = "Jason";
+//        String loginPasswd = "Jimmy123$";
+//        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+//
+//		Class.forName("com.mysql.jdbc.Driver").newInstance();
+//		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+		
+        Context initCtx = new InitialContext();
 
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+        Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+        // Look up our data source
+        DataSource ds = (DataSource) envCtx.lookup("jdbc/localdb");
+
+        Connection connection = ds.getConnection();
+
+		
 		Statement statement = connection.createStatement();
 
 		String query = String.format("SELECT * from employees where email='%s'", email);

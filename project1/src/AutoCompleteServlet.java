@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,8 +23,8 @@ import com.google.gson.JsonObject;
 public class AutoCompleteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	@Resource(name = "jdbc/moviedb")
-	private DataSource dataSource;
+//	@Resource(name = "jdbc/moviedb")
+//	private DataSource dataSource;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
@@ -31,7 +33,24 @@ public class AutoCompleteServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		try {
-			Connection dbcon = dataSource.getConnection();
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                out.println("envCtx is NULL");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/masterdb");
+			
+            if (ds == null)
+                out.println("ds is null.");
+
+            Connection dbcon = ds.getConnection();
+            if (dbcon == null)
+                out.println("dbcon is null.");
+			
+			
+//			Connection dbcon = dataSource.getConnection();
 			
 			JsonArray jsonArray = new JsonArray();
 			
