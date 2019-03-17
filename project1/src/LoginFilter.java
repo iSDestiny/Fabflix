@@ -55,8 +55,9 @@ public class LoginFilter implements Filter {
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
         requestURI = requestURI.toLowerCase();
 
-        return requestURI.endsWith("login.html") || requestURI.endsWith("login.js")
-                || requestURI.endsWith("api/login") || requestURI.contains("api");
+//        return requestURI.endsWith("login.html") || requestURI.endsWith("login.js")
+//                || requestURI.endsWith("api/login") || requestURI.contains("api");
+        return true;
 
     }
 

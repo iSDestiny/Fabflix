@@ -2,6 +2,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,8 +20,8 @@ import java.sql.ResultSet;
 public class SingleMovieServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	@Resource(name = "jdbc/moviedb")
-	private DataSource dataSource;
+//	@Resource(name = "jdbc/moviedb")
+//	private DataSource dataSource;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -31,7 +33,23 @@ public class SingleMovieServlet extends HttpServlet {
 
 		try 
 		{
-			Connection dbcon = dataSource.getConnection();
+//			Connection dbcon = dataSource.getConnection();
+			
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                out.println("envCtx is NULL");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/localdb");
+			
+            if (ds == null)
+                out.println("ds is null.");
+
+            Connection dbcon = ds.getConnection();
+            if (dbcon == null)
+                out.println("dbcon is null.");
 
 			String query = "SELECT id,title,year,director,rating \r\n" +
 							"FROM movies m, ratings r\r\n" +

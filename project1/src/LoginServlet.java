@@ -1,6 +1,8 @@
 import com.google.gson.JsonObject;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +27,8 @@ import java.util.Map;
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     
-    @Resource(name = "jdbc/moviedb")
-	private DataSource dataSource;
+//    @Resource(name = "jdbc/moviedb")
+//	private DataSource dataSource;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     	
@@ -71,7 +73,17 @@ public class LoginServlet extends HttpServlet {
 	
         try
         {
-	        Connection dbcon = dataSource.getConnection();
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/localdb");
+
+            Connection dbcon = ds.getConnection();
+
+        	
+//	        Connection dbcon = dataSource.getConnection();
 	
 			String query = "SELECT id,email,password from customers where email = ?";
 			PreparedStatement statement = dbcon.prepareStatement(query);

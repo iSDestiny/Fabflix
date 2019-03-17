@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,8 +27,8 @@ import com.google.gson.JsonObject;
 public class CartServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	@Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
+//	@Resource(name = "jdbc/moviedb")
+//    private DataSource dataSource;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -48,7 +50,23 @@ public class CartServlet extends HttpServlet {
 		
 		try
 		{
-			Connection dbc = dataSource.getConnection();
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                out.println("envCtx is NULL");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/localdb");
+			
+            if (ds == null)
+                out.println("ds is null.");
+
+            Connection dbc = ds.getConnection();
+            if (dbc == null)
+                out.println("dbcon is null.");
+			
+//			Connection dbc = dataSource.getConnection();
 	
 			if (request.getParameter("quantity") != null)
 			{

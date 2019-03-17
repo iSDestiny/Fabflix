@@ -46,7 +46,10 @@ function createStarDetails(data) {
 				window.location.pathname +
 				'?limit=10&sort=ratingdesc&page=1';
 		} else {
-			window.location.href = movieListURL;
+			var url_new = new URL(window.location.toString());
+			url_new.search = movieListURL.substring(movieListURL.indexOf("?"));
+			url_new.pathname = "project1/" + movieListURL.substring(0, movieListURL.indexOf("?"));
+			window.location.href = url_new.toString();
 		}
 	});
 }

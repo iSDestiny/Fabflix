@@ -2,6 +2,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,7 +41,8 @@ public class MovieListServlet extends HttpServlet
 		StringBuffer URL = request.getRequestURL();
 		String urlQuery = request.getQueryString();
 		URL.replace(URL.indexOf("api/movies"), URL.length(), "movielist.html?" + urlQuery);
-		session.setAttribute("movielistURL", URL.toString());
+		session.setAttribute("movielistURL", "movielist.html?"+urlQuery);
+		
 		
 		response.setContentType("application/json");
 		
@@ -49,7 +52,24 @@ public class MovieListServlet extends HttpServlet
 		System.out.println(params.toString());
 		
 		try {
-			Connection dbc = dataSource.getConnection();
+			
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                out.println("envCtx is NULL");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/localdb");
+			
+            if (ds == null)
+                out.println("ds is null.");
+
+            Connection dbc = ds.getConnection();
+            if (dbc == null)
+                out.println("dbcon is null.");
+            
+//			Connection dbc = dataSource.getConnection();
 			PreparedStatement statement = buildQuery(dbc, params);
 			
 			
