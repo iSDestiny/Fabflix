@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Context>
+<Context path="/project1">
 
-    <!-- Defines a Data Source Connecting to localhost moviedb-->
+    <!-- Defines a Data Source Connecting to localhost moviedb (no connection pooling)-->
     <Resource name="jdbc/moviedb"
               auth="Container"
               driverClassName="com.mysql.jdbc.Driver"
@@ -11,11 +11,13 @@
               password="Jimmy123$"
               url="jdbc:mysql://localhost:3306/moviedb"/>
 
+	<!-- Defines a Data Source Connecting to localhost (can be either slave or master instance based on the local instance) moviedb (with connection pooling)-->
     <Resource name="jdbc/localdb" auth="Container" type="javax.sql.DataSource"
               maxTotal="100" maxIdle="30" maxWaitMillis="10000" username="Jason"
               password="Jimmy123$" driverClassName="com.mysql.jdbc.Driver"
               url="jdbc:mysql://localhost:3306/moviedb?autoReconnect=true&amp;useSSL=false&amp;cachePrepStmts=true"/>
-
+              
+	<!-- Defines a Data Source Connecting to master instance (instance 2) moviedb (with connection pooling)-->
     <Resource name="jdbc/masterdb" auth="Container" type="javax.sql.DataSource"
               maxTotal="100" maxIdle="30" maxWaitMillis="10000" username="Jason"
               password="Jimmy123$" driverClassName="com.mysql.jdbc.Driver"

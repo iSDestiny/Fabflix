@@ -73,6 +73,7 @@ public class LoginServlet extends HttpServlet {
 	
         try
         {
+        	// Start connection pooling
             Context initCtx = new InitialContext();
 
             Context envCtx = (Context) initCtx.lookup("java:comp/env");
@@ -82,7 +83,6 @@ public class LoginServlet extends HttpServlet {
 
             Connection dbcon = ds.getConnection();
 
-        	
 //	        Connection dbcon = dataSource.getConnection();
 	
 			String query = "SELECT id,email,password from customers where email = ?";

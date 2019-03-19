@@ -33,6 +33,8 @@ public class AutoCompleteServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		try {
+			
+			// Start connection pooling
             Context initCtx = new InitialContext();
 
             Context envCtx = (Context) initCtx.lookup("java:comp/env");
@@ -40,7 +42,7 @@ public class AutoCompleteServlet extends HttpServlet {
                 out.println("envCtx is NULL");
 
             // Look up our data source
-            DataSource ds = (DataSource) envCtx.lookup("jdbc/masterdb");
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/localdb");
 			
             if (ds == null)
                 out.println("ds is null.");

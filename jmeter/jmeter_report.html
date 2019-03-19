@@ -1,0 +1,117 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    background-color: linen;
+}
+
+td {
+    border-top-style: solid;
+}
+</style>
+</head>
+<body>
+
+<h2>Team 71</h2>
+<h3>Jason Bugallon, Kulraj Dhaliwal</h3>
+
+<table style="width:100%">
+  <tr style="font-weight:bold; background-color: orange">
+    <td width="300px">Single-instance version cases</td>
+    <td>Graph Results Screenshot</td>
+    <td>Average Query Time(ms)</td>
+    <td>Average Search Servlet Time(ms)</td>
+    <td>Average JDBC Time(ms)</td>
+    <td>Analysis</td>
+  </tr>
+  <tr>
+    <td>Case 1: HTTP/1 thread</td>
+    <td><img src="graph-results/single-instance-regular-http-1-thread.png" alt="Graph Results Screenshot Case 1" style="width:304px;height:228px;"></td>
+    <td>51</td>
+    <td>1.321</td>
+    <td>0.721</td>
+    <td>As we expected, this case is the fastest as there is only one thread(user) sending requests and utilizes both connection pooling and prepared statements. It also doesn't suffer from the overhead of redirection like the scaled version.</td>
+  </tr>
+  <tr>
+    <td>Case 2: HTTP/10 threads</td>
+    <td><img src="graph-results/single-instance-regular-http-10-threads.png" alt="Graph Results Screenshot Case 2" style="width:304px;height:228px;"></td>
+    <td>77</td>
+    <td>1.959</td>
+    <td>0.838</td>
+    <td>As expected, this case is the fastest after case 1 as case 1 only runs on on thread(user). With 10 threads sending requests to the server at once, it is obvious that the server will become slower. The results show that connection pooling indeed helps as this case is faster than case 5 which had no connection pooling.</td>
+  </tr>
+  <tr>
+    <td>Case 3: HTTPS/10 threads</td>
+    <td><img src="graph-results/single-instance-regular-https-10-threads.png" alt="Graph Results Screenshot Case 3" style="width:304px;height:228px;"></td>
+    <td>156</td>
+    <td>1.910</td>
+    <td>0.822</td>
+    <td>In this test case, the average query time was higher compared to every HTTP request in this version, even those with no connection pooling or no prepared statements. This shows how significant the added overhead of encrypting/decrypting data for HTTPS requests is. However the average search servlet time and the average JDBC times had decent timings, which show that connection pooling and prepared statements indeed helped with the timings. The https overhead is not part of ts and tj but adds to the average query time.</td>
+  </tr>
+  <tr>
+    <td>Case 4: HTTP/10 threads/No prepared statements</td>
+    <td><img src="graph-results/single-instance-no-prepared-statements-graph-results.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+    <td>84</td>
+    <td>1.990</td>
+    <td>0.873</td>
+    <td>As expected, the case without prepared statements proved to be slower than case 2 which utilized prepared statements. The average servlet time and average JDBC were also worse than in case 2. This shows thats prepared statements makes for better timings.</td>
+  </tr>
+  <tr>
+    <td>Case 5: HTTP/10 threads/No connection pooling</td>
+    <td><img src="graph-results/single-instance-no-connection-pooling-graph-results.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+    <td>142</td>
+    <td>1.741</td>
+    <td>0.773</td>
+    <td>As we expected, because there was no connection pooling the average query time was worse compared to case 4 and case 2 which both utilized connection pooling. However, the average servlet time and average jdbc were faster in this case than in case 4 and case 2 which is unexpected. I believe the reason might have been network or latency related because one of my roommates started to watch Netflix which may have slowed down our internet. </td>
+  </tr>
+
+</table> 
+
+
+<table style="width:100%">
+  <tr style="font-weight:bold; background-color: orange">
+    <td width="300px">Scaled version cases</td>
+    <td>Graph Results Screenshot</td>
+    <td>Average Query Time(ms)</td>
+    <td>Average Search Servlet Time(ms)</td>
+    <td>Average JDBC Time(ms)</td>
+    <td>Analysis</td>
+  </tr>
+  <tr>
+    <td>Case 1: HTTP/1 thread</td>
+    <td><img src="graph-results/scaled-version-regular-http-1-thread.png" alt="Graph Results Screenshot Case 1" style="width:304px;height:228px;"></td>
+    <td>63</td>
+    <td>1.520</td>
+    <td>0.692</td>
+    <td>As expected, this case was the fastest out of all the cases in the scaled version. This is because it is using prepared statements and connection pooling which helps average servlet time and average JDBC time respectively and also because there is only one thread(user) involved. The times here are slightly worse than the single instance version case 1 which had the same case, we believe the difference in the timings is caused by the redirection overhead of the load balancer or it might just simply be a network speed/latency issue</td>
+  </tr>
+  <tr>
+    <td>Case 2: HTTP/10 threads</td>
+    <td><img src="graph-results/scaled-version-regular-http-10-threads.png" alt="Graph Results Screenshot Case 2" style="width:304px;height:228px;"></td>
+    <td>74</td>
+    <td>1.652</td>
+    <td>0.758</td>
+    <td>--</td>
+  </tr>
+  <tr>
+    <td>Case 3: HTTP/10 threads/No prepared statements</td>
+    <td><img src="graph-results/scaled-version-no-prepared-statements.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+    <td>73</td>
+    <td>2.122</td>
+    <td>0.994</td>
+    <td>--</td>
+  </tr>
+  <tr>
+    <td>Case 4: HTTP/10 threads/No connection pooling</td>
+    <td><img src="graph-results/scaled-version-no-connection-pooling.png"Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+    <td>73</td>
+    <td>1.837</td>
+    <td>0.831</td>
+    <td>--</td>
+  </tr>
+
+</table> 
+
+</body>
+</html>
