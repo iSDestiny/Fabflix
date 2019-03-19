@@ -35,6 +35,8 @@ public class SingleMovieServlet extends HttpServlet {
 		{
 //			Connection dbcon = dataSource.getConnection();
 			
+			
+			// Start connection pooling
             Context initCtx = new InitialContext();
 
             Context envCtx = (Context) initCtx.lookup("java:comp/env");

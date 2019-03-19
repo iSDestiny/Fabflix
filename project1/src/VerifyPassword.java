@@ -1,5 +1,6 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -37,6 +38,7 @@ public class VerifyPassword {
 //		Class.forName("com.mysql.jdbc.Driver").newInstance();
 //		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 		
+		// Start connection pooling
         Context initCtx = new InitialContext();
 
         Context envCtx = (Context) initCtx.lookup("java:comp/env");
@@ -46,9 +48,10 @@ public class VerifyPassword {
 
         Connection connection = ds.getConnection();
 		
-		Statement statement = connection.createStatement();
-
-		String query = String.format("SELECT * from customers where email='%s'", email);
+        String query = "SELECT * from customers where email=?";
+		
+        PreparedStatement statement = connection.prepareStatement(query);
+		statement.setString(1, email);
 
 		ResultSet rs = statement.executeQuery(query);
 

@@ -41,6 +41,7 @@ public class AddStarServlet extends HttpServlet {
 		
 		try 
 		{
+			// Start connection pooling
             Context initCtx = new InitialContext();
 
             Context envCtx = (Context) initCtx.lookup("java:comp/env");
