@@ -1,11 +1,11 @@
-# cs122b-winter19-team-71
+# Fabflix
+Fabflix is a IMDb/Netflix-like movie ecommerce full stack web application where a user would browse for movies and purchase the ones they want. This was a project done with one other person, Kulraj Dhaliwal. This was our very first large web application where there was a seperate frontend and backend. I, Jason Bugallon, did all of the frontend and some backend while Kulraj did the rest of the backend implementation. 
 
-## Members
-    Jason Bugalon, 85806059, jbugallo
-    Kulraj Dhaliwal, 18833491, kulrajd
+## Application Technology Stack
+For the frontend, Fabflix was built in pure HTML, CSS, and Javascript (with JQuery). On the other hand, the backend was built using Apache Tomcat(Java), while using mySQL as our database. 
 
-## How to use the script to get averages
-The log parsing script can be found in the root of the repository, it is named getAveragesScript.py. This script was created and tested with Python 3.7.2. To use it you must call it in the command line and supply it a single log file. It doesn't have to be in the same folder as the log file, as long as you give it the path to the log file, that will suffice. The script will return both the average servlet time and the average JDBC time in the format of (ts: xxxx, tj: xxxx), where xxxx is the result for each average. 
+## Deployment and Scaling
+Fabflix was hosted originally on a single AWS EC2 instance which ran on a Ubuntu Linux operating system. To scale the system, we utilized two more EC2 instances, which totaled to a three instances. The first instance would be an Apache Load Balancer which would handle the incoming traffic and redirect it to the other two EC2 instances which would both be hosting Fabflix. By having it set up this way, the traffic will be divided between two instances to ease the load if there were a lot of people trying to access the site. This way Fabflix's performance would be much better under high traffic compared to just using a single instance. These two instances utilized a Master and Slave mySQL setup. The two instances would be able to read from either of the databases but would only be able to write to the master instance. The writes to the master mySQL database would also occur on the slave database. In order to test whether our scaling of Fabflix was effective, we utilized a tool called Apache JMeter in order to simulate high traffic onto our system. From this tool we found out that our setup was indeed effective as requests to the three instance setup was much faster compared to the one instance setup during high traffic. 
 
-### Example Usage of Script
->python getAveragesScript.py LOG_FILE
+## Final Thoughts
+Fabflix was our very first web application so it was not very optimized and could be quite slow, especially in loading images. If I were to redo this project I would definitely use a framework such as React or Angular. I would also not have chosen Apache Tomcat for the backend and used something like Node.js(Express) or Python(Django or Flask).
